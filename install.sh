@@ -127,3 +127,14 @@ do
     python -m pip install --upgrade "$p"
 done
 
+# Install zinit https://github.com/zdharma/zinit#zinit
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
+
+# Fix "zsh compinit: insecure directories" error.
+sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
+chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
+
+# Force zinit self-upgrade.
+zinit self-update
+zinit update
+
