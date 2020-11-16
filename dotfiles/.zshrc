@@ -1,4 +1,14 @@
 ###############################################################################
+# Neovim
+###############################################################################
+# Make Neovim the default editor
+export EDITOR="nvim"
+
+alias vim='nvim'
+alias vi='nvim'
+alias v="nvim"
+
+###############################################################################
 # Expends global searched path to look for brew-sourced utilities.
 ###############################################################################
 # File where the list of path is cached.
@@ -32,3 +42,10 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
     # Prepend paths. Source: https://stackoverflow.com/a/9352979
     path[1,0]=${line}
 }
+
+###############################################################################
+# File associations, i.e. suffix aliases
+###############################################################################
+# Source: https://thorsten-hans.com/5-types-of-zsh-aliases#suffix-aliases
+
+alias -s {py,rst,toml,json}=nvim
