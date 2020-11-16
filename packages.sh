@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 set -x
+IFS=$'\n'
+setopt sh_word_split
 
 # Packages installed from Brew.
 BREW_PACKAGES="

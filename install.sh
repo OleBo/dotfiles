@@ -80,11 +80,13 @@ source ./packages.sh
 # Install brew packages.
 for PACKAGE in $BREW_PACKAGES
 do
-   brew install "$PACKAGE"
+	echo "Installing brew package $PACKAGE"
+	brew install "$PACKAGE"
 done
 
 # Install cask packages.
 for PACKAGE in $CASK_PACKAGES
 do
-   brew cask install "$PACKAGE"
+	echo "Installing cask package $PACKAGE"
+	brew cask install "$PACKAGE"
 done
