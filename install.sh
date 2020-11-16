@@ -112,5 +112,18 @@ mas lucky "Pages"
 mas lucky "Final Cut Pro"
 mas lucky "Logic Pro"
 mas lucky "MainStage"
-mas lucky "Motion"
+#mas lucky "Motion"
+
+# Clean things up.
+brew cleanup
+brew services cleanup
+
+# Use latest pip.
+python -m pip install --upgrade pip
+
+# Install & upgrade all global python modules
+for p in $PYTHON_PACKAGES
+do
+    python -m pip install --upgrade "$p"
+done
 

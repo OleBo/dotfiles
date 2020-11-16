@@ -5,8 +5,10 @@ setopt sh_word_split
 
 # Packages installed from Brew.
 BREW_PACKAGES="
-wget
 htop
+neovim
+python
+wget
 "
 
 # Packages to install by the way of Brew's casks.
