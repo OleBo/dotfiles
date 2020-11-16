@@ -90,3 +90,7 @@ do
 	echo "Installing cask package $PACKAGE"
 	brew cask install "$PACKAGE"
 done
+
+# htop-osx requires root privileges to correctly display all running processes.
+sudo chown root:wheel "$(brew --prefix)/bin/htop"
+sudo chmod u+s "$(brew --prefix)/bin/htop"
