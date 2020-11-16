@@ -94,3 +94,23 @@ done
 # htop-osx requires root privileges to correctly display all running processes.
 sudo chown root:wheel "$(brew --prefix)/bin/htop"
 sudo chmod u+s "$(brew --prefix)/bin/htop"
+
+######### Mac App Store packages #########
+
+# Install Mac App Store CLI and upgrade all apps.
+brew install mas
+mas upgrade
+
+# Remove Applications
+sudo rm -rf /Applications/GarageBand.app
+sudo rm -rf /Applications/iMovie.app
+
+# Install Applications
+mas lucky "Keynote"
+mas lucky "Numbers"
+mas lucky "Pages"
+mas lucky "Final Cut Pro"
+mas lucky "Logic Pro"
+mas lucky "MainStage"
+mas lucky "Motion"
+
