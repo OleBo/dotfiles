@@ -70,3 +70,21 @@ brew tap homebrew/services
 
 # Add fonts https://github.com/Homebrew/homebrew-cask-fonts
 brew tap homebrew/cask-fonts
+
+# Install XQuartz beforehand to support Linux-based GUI Apps.
+brew cask install xquartz
+
+# Load package lists to install.
+source ./packages.sh
+
+# Install brew packages.
+for PACKAGE in $BREW_PACKAGES
+do
+   brew install "$PACKAGE"
+done
+
+# Install cask packages.
+for PACKAGE in $CASK_PACKAGES
+do
+   brew cask install "$PACKAGE"
+done
