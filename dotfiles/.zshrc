@@ -199,3 +199,10 @@ zinit light darvid/zsh-poetry
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+###############################################################################
+# Prompt
+###############################################################################
+# Set user & root prompt
+export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
+
