@@ -50,6 +50,10 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 
 alias -s {py,rst,toml,json}=nvim
 
+###############################################################################
+# Zinit
+###############################################################################
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
@@ -63,3 +67,29 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
+
+###############################################################################
+# Zsh Parameters
+###############################################################################
+# Source: http://zsh.sourceforge.net/Doc/Release/Parameters.html#Parameters-Used-By-The-Shell
+
+# Prefer US English and use UTF-8
+LANG="en_US.UTF-8"
+LC_ALL=$LANG
+
+# Setting history length
+HISTSIZE=999999
+SAVEHIST=$HISTSIZE
+
+# Make some commands not show up in history
+HISTORY_IGNORE='(l|ls|ll|cd|cd ..|pwd|exit|date|history)'
+
+# Get rid of extra empty space on the right.
+# See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
+ZLE_RPROMPT_INDENT=0
+
+# Binds Up and Down to a history search, backwards and forwards.
+# Source: https://unix.stackexchange.com/a/97844
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
+
