@@ -58,3 +58,15 @@ fi
 brew analytics off
 brew update
 brew upgrade
+
+# Add Cask https://github.com/Homebrew/homebrew-cask/blob/master/USAGE.md
+brew tap homebrew/cask
+
+# Add drivers https://github.com/Homebrew/homebrew-cask-drivers
+brew tap homebrew/cask-drivers
+
+# Add services https://github.com/Homebrew/homebrew-services
+brew tap homebrew/services
+
+# Add fonts https://github.com/Homebrew/homebrew-cask-fonts
+brew tap homebrew/cask-fonts
