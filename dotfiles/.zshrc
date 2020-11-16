@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ###############################################################################
 # Neovim
 ###############################################################################
@@ -157,3 +164,38 @@ unsetopt sh_word_split
 ## Zle
 # Avoid beeps and visual bells.
 unsetopt beep
+
+###############################################################################
+# Zsh Plugins
+###############################################################################
+zinit light zsh-users/zsh-completions
+
+# Load custom completion.
+fpath=( ~/.zfunc "${fpath[@]}" )
+
+# Initialize completion.
+# See: https://github.com/Aloxaf/fzf-tab/issues/61
+zpcompinit; zpcdreplay
+
+# Configure fzf and its Zsh integration.
+# Source: https://mike.place/2017/fzf-fd/
+export FZF_DEFAULT_COMMAND="fd --one-file-system --type f --hidden . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd --one-file-system --type d --hidden --exclude .git . $HOME"
+zinit light Aloxaf/fzf-tab
+
+zinit light zdharma/fast-syntax-highlighting
+
+zinit light zsh-users/zsh-history-substring-search
+
+# Autosuggestion plugin config.
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+#ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+zinit light zsh-users/zsh-autosuggestions
+
+zinit light darvid/zsh-poetry
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
