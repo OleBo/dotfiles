@@ -57,6 +57,7 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 
 alias -s {py,rst,toml,json}=nvim
 alias -s {md,markdown}=MacDown
+alias -s {ape,avi,flv,m4a,mkv,mov,mp3,mp4,mpeg,mpg,ogg,ogm,wav,webm}=iina
 
 ###############################################################################
 # Zinit

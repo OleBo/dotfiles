@@ -15,6 +15,7 @@ wget
 
 # Packages to install by the way of Brew's casks.
 CASK_PACKAGES="
+iina
 macdown
 tor-browser
 "
