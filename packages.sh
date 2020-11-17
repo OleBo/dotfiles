@@ -5,6 +5,8 @@ setopt sh_word_split
 
 # Packages installed from Brew.
 BREW_PACKAGES="
+colordiff
+grc
 htop
 neovim
 python
@@ -18,5 +20,6 @@ tor-browser
 
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
+howdoi
 neovim
 "

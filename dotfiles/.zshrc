@@ -206,3 +206,59 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Set user & root prompt
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
 
+###############################################################################
+# Coloured output, aliases and good defaults.
+###############################################################################
+
+alias du='du -csh'
+alias df='df -h'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias diff="colordiff -ru"
+#alias dmesg="dmesg --color"
+#alias ccat='pygmentize -g'
+
+alias top="htop"
+#alias gr='grep -RIi --no-messages'
+#alias rg='rg -uuu'
+alias g="git"
+alias h="history"
+alias q='exit'
+alias how="howdoi --color"
+
+function cls {
+    # Source: https://stackoverflow.com/a/2198403
+    osascript -e 'tell application "System Events" to keystroke "k" using command down'
+}
+alias c='cls'
+
+# Use GRC for additionnal colorization
+GRC=$(which grc)
+if [ -n GRC ]; then
+    alias colourify='$GRC -es --colour=auto'
+    alias as='colourify as'
+    #cvs
+    alias configure='colourify ./configure'
+    alias diff='colourify diff'
+    alias dig='colourify dig'
+    alias g++='colourify g++'
+    alias gas='colourify gas'
+    alias gcc='colourify gcc'
+    alias head='colourify head'
+    alias ifconfig='colourify ifconfig'
+    #irclog
+    alias ld='colourify ld'
+    #ldap
+    #log
+    alias make='colourify make'
+    alias mount='colourify mount'
+    #mtr
+    alias netstat='colourify netstat'
+    alias ping='colourify ping'
+    #proftpd
+    alias ps='colourify ps'
+    alias tail='colourify tail'
+    alias traceroute='colourify traceroute'
+    #wdiff
+fi
