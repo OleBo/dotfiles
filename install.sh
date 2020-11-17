@@ -138,3 +138,6 @@ chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 zinit self-update
 zinit update
 
+# Configure everything.
+source ./macos-config.sh
+
