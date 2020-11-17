@@ -9,6 +9,7 @@ ack
 awscli
 colordiff
 colortail
+exa
 graphviz
 grc
 htop
