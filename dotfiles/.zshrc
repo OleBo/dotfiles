@@ -56,6 +56,7 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 # Source: https://thorsten-hans.com/5-types-of-zsh-aliases#suffix-aliases
 
 alias -s {py,rst,toml,json}=nvim
+alias -s {md,markdown}=MacDown
 
 ###############################################################################
 # Zinit
