@@ -262,3 +262,77 @@ if [ -n GRC ]; then
     alias traceroute='colourify traceroute'
     #wdiff
 fi
+
+# exa is a modern ls.
+export TIME_STYLE="long-iso"
+LS_FLAGS="--all --group-directories-first --sort=name"
+alias ls="exa ${LS_FLAGS} --across"
+alias ll="exa ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
+alias l="ls"
+alias tree="ll --tree"
+
+# Handy aliases for going up in a directory
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+export LESS="-eRX"
+export LESSOPEN='| pygmentize -g %s'
+# Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
+export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
+export LESS_TERMCAP_md=$(tput bold; tput setaf 6) # cyan
+export LESS_TERMCAP_me=$(tput sgr0)
+export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4) # yellow on blue
+export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
+export LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 7) # white
+export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+export LESS_TERMCAP_mr=$(tput rev)
+export LESS_TERMCAP_mh=$(tput dim)
+export LESS_TERMCAP_ZN=$(tput ssubm)
+export LESS_TERMCAP_ZV=$(tput rsubm)
+export LESS_TERMCAP_ZO=$(tput ssupm)
+export LESS_TERMCAP_ZW=$(tput rsupm)
+
+# Remove spurious find error messages on access restrictions. Keeps find's
+# output clean, tidy and easier to read.
+# Source: https://apple.stackexchange.com/a/353650
+find() {
+  { LC_ALL=C command find "$@" 3>&2 2>&1 1>&3 | \
+    grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
+    [ $? = 1 ]; \
+  } 3>&2 2>&1
+}
+
+# Default options for fd, a faster find.
+alias fd='fd --one-file-system --hidden'
+
+# Extract most know archives with one command
+extract () {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.dmg)   hdiutil mount "$1"                ;;
+            *.tar)   tar -xvf "$1"                     ;;
+            *.zip)   unzip "$1"                        ;;
+            *.ZIP)   unzip "$1"                        ;;
+            *.pax)   pax -r < "$1"                     ;;
+            *.pax.Z) uncompress "$1" --stdout | pax -r ;;
+            *.rar)   unrar x "$1"                      ;;
+            *.7z)    7z x "$1"                         ;;
+            *.xar)   xar -xvf "$1"                     ;;
+            *.pkg)   xar -xvf "$1"                     ;;
+            # Rely on GNU's tar autodetection. List of recognized suffixes:
+            # https://www.gnu.org/software/tar/manual/html_node/gzip.html#auto_002dcompress
+            *)       tar -axvf "$1"                    ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Opens current directory in apps
+alias f='open -a Finder ./'
+
+# Replace netstat command on macOS to find ports used by apps
+alias netstat="sudo lsof -i -P"
+
