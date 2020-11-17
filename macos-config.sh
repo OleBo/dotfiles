@@ -220,3 +220,136 @@ defaults write com.apple.systemuiserver menuExtras -array \
 # Disable Notification Center and remove the menu bar icon
 #launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
 
+##############################################################################
+# Security                                                                   #
+##############################################################################
+# Also see: https://github.com/drduh/macOS-Security-and-Privacy-Guide
+# https://benchmarks.cisecurity.org/tools2/osx/CIS_Apple_OSX_10.12_Benchmark_v1.0.0.pdf
+
+# Enable Firewall. Possible values: 0 = off, 1 = on for specific sevices, 2 =
+# on for essential services.
+sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+
+# Enable stealth mode
+# https://support.apple.com/kb/PH18642
+#sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
+
+# Enable firewall logging
+sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
+
+# Do not automatically allow signed software to receive incoming connections
+sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
+
+# Reload the firewall
+# (uncomment if above is not commented out)
+launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
+launchctl load /System/Library/LaunchAgents/com.apple.alf.useragent.plist
+
+# Apply configuration on all network interfaces.
+IFS=$'\n'
+for net_service in `networksetup -listallnetworkservices | awk '{if(NR>1)print}'`; do
+    # Use Cloudflare's fast and privacy friendly DNS.
+    networksetup -setdnsservers "${net_service}" 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001
+    # Clear out all search domains.
+    networksetup -setsearchdomains "${net_service}" "Empty"
+done
+unset IFS
+
+# Setup 10G NIC
+#networksetup -setMTU "Thunderbolt Ethernet Slot  1, Port 2" 9000
+
+# Disable IR remote control
+sudo defaults write /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool false
+
+# Turn Bluetooth off completely
+#sudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0
+#sudo launchctl unload /System/Library/LaunchDaemons/com.apple.blued.plist
+#sudo launchctl load /System/Library/LaunchDaemons/com.apple.blued.plist
+
+# Disable wifi captive portal
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control Active -bool false
+
+# Disable remote apple events
+sudo systemsetup -setremoteappleevents off
+
+# Disable remote login
+# TODO: is waiting for user input. Make it unattended.
+#sudo systemsetup -setremotelogin off
+
+# Disable wake-on modem
+sudo systemsetup -setwakeonmodem off
+sudo pmset -a ring 0
+
+# Disable wake-on LAN
+sudo systemsetup -setwakeonnetworkaccess off
+sudo pmset -a womp 0
+
+# Disable file-sharing via AFP or SMB
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist
+
+# Display login window as name and password
+#sudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
+
+# Do not show password hints
+sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
+
+# Disable guest account login
+sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+
+# Disable automatic login
+sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser &> /dev/null
+
+# A lost machine might be lucky and stumble upon a Good Samaritan.
+sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText \
+    "Found this computer? Please contact me at olaf.bochmann@gmail.com or +49 159 03784736."
+
+# Automatically lock the login keychain for inactivity after 6 hours.
+security set-keychain-settings -t 21600 -l "${HOME}/Library/Keychains/login.keychain"
+
+# Destroy FileVault key when going into standby mode, forcing a re-auth.
+# Source: https://web.archive.org/web/20160114141929/https://training.apple.com/pdf/WP_FileVault2.pdf
+sudo pmset destroyfvkeyonstandby 1
+
+# Enable FileVault (if not already enabled)
+# This requires a user password, and outputs a recovery key that should be
+# copied to a secure location
+if [[ $(sudo fdesetup status | head -1) == "FileVault is Off." ]]; then
+  sudo fdesetup enable -user `whoami`
+fi
+
+# Disable automatic login when FileVault is enabled
+#sudo defaults write /Library/Preferences/com.apple.loginwindow DisableFDEAutoLogin -bool true
+
+# Enable secure virtual memory
+sudo defaults write /Library/Preferences/com.apple.virtualMemory UseEncryptedSwap -bool true
+
+# Disable Bonjour multicast advertisements
+sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
+
+# Disable diagnostic reports.
+sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.SubmitDiagInfo.plist
+
+# Show location icon in menu bar when System Services request your location.
+sudo defaults write /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices -bool true
+
+# Log firewall events for 90 days.
+sudo perl -p -i -e 's/rotate=seq compress file_max=5M all_max=50M/rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
+sudo perl -p -i -e 's/appfirewall.log file_max=5M all_max=50M/appfirewall.log rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
+
+# Log authentication events for 90 days.
+sudo perl -p -i -e 's/rotate=seq file_max=5M all_max=20M/rotate=utc file_max=5M ttl=90/g' "/etc/asl/com.apple.authd"
+
+# Log installation events for a year.
+sudo perl -p -i -e 's/format=bsd/format=bsd mode=0640 rotate=utc compress file_max=5M ttl=365/g' "/etc/asl/com.apple.install"
+
+# Increase the retention time for system.log and secure.log (CIS Requirement 1.7.1I)
+sudo perl -p -i -e 's/\/var\/log\/wtmp.*$/\/var\/log\/wtmp   \t\t\t640\ \ 31\    *\t\@hh24\ \J/g' "/etc/newsyslog.conf"
+
+# CIS 3.3 audit_control flags setting.
+sudo perl -p -i -e 's|flags:lo,aa|flags:lo,aa,ad,fd,fm,-all,^-fa,^-fc,^-cl|g' /private/etc/security/audit_control
+sudo perl -p -i -e 's|filesz:2M|filesz:10M|g' /private/etc/security/audit_control
+sudo perl -p -i -e 's|expire-after:10M|expire-after: 30d |g' /private/etc/security/audit_control
+
