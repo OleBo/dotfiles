@@ -336,3 +336,16 @@ alias f='open -a Finder ./'
 # Replace netstat command on macOS to find ports used by apps
 alias netstat="sudo lsof -i -P"
 
+###############################################################################
+# Python
+###############################################################################
+
+# Don't let Python produce .pyc or .pyo. Left-overs can produce strange side-effects.
+export PYTHONDONTWRITEBYTECODE=true
+
+# Python shell auto-completion and history.
+export PYTHONSTARTUP="$HOME/.python_startup.py"
+
+# Display DeprecationWarning
+#export PYTHONWARNINGS=d
+
