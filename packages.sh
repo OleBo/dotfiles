@@ -29,20 +29,23 @@ wget
 
 # Packages to install by the way of Brew's casks.
 CASK_PACKAGES="
-bisq
-db-browser-for-sqlite
-disk-drill
+chromium
+darktable
+docker
 dropbox
-dupeguru
-electrum
 fork
 gimp
+google-backup-and-sync
+google-cloud-sdk
 google-drive-file-stream
 iina
 java
-kap
 macdown
-netnewswire
+mactex
+miniconda
+slack
+raspberry-pi-imager
+textmate
 tor-browser
 "
 
