@@ -18,6 +18,7 @@ jq
 neovim
 p7zip
 pandoc
+pipenv
 python
 rclone
 testdisk
@@ -42,7 +43,6 @@ iina
 java
 macdown
 mactex
-miniconda
 slack
 raspberry-pi-imager
 textmate
@@ -59,4 +59,11 @@ poetry
 pycodestyle
 pydocstyle
 pygments
-"
+pylint
+pytest
+pytest-cov
+pytest-sugar
+setuptools
+tox
+wheel
+yapf

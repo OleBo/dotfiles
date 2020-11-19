@@ -143,6 +143,7 @@ do
 done
 
 # Generate pip and poetry completion.
+# TODO https://github.com/pypa/pipenv/issues/442
 python -m pip completion --zsh > ~/.zfunc/_pip
 poetry completions zsh > ~/.zfunc/_poetry
 _MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
