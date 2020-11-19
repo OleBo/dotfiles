@@ -52,7 +52,10 @@ tor-browser
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
 howdoi
+jupyter
+meta-package-manager
 neovim
+poetry
 pycodestyle
 pydocstyle
 pygments

@@ -114,6 +114,21 @@ mas lucky "Logic Pro"
 mas lucky "MainStage"
 #mas lucky "Motion"
 
+# Open apps so I'll not forget to login
+open -a Dropbox
+
+# Install QuickLooks plugins
+# Source: https://github.com/sindresorhus/quick-look-plugins
+brew cask install epubquicklook
+brew cask install qlcolorcode
+brew cask install qlimagesize
+brew cask install qlmarkdown
+brew cask install qlstephen
+brew cask install qlvideo
+brew cask install quicklook-json
+brew cask install suspicious-package
+qlmanage -r
+
 # Clean things up.
 brew cleanup
 brew services cleanup
@@ -126,6 +141,14 @@ for p in $PYTHON_PACKAGES
 do
     python -m pip install --upgrade "$p"
 done
+
+# Generate pip and poetry completion.
+python -m pip completion --zsh > ~/.zfunc/_pip
+poetry completions zsh > ~/.zfunc/_poetry
+_MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
+
+# Force Neovim plugin upgrades
+nvim -c "try | call dein#update() | finally | qall! | endtry"
 
 # Install zinit https://github.com/zdharma/zinit#zinit
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
