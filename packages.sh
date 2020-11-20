@@ -53,8 +53,10 @@ tor-browser
 PYTHON_PACKAGES="
 howdoi
 jupyter
+jupyterlab
 meta-package-manager
 neovim
+notebook
 poetry
 pycodestyle
 pydocstyle
@@ -65,5 +67,7 @@ pytest-cov
 pytest-sugar
 setuptools
 tox
+voila
 wheel
 yapf
+"

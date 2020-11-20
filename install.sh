@@ -139,7 +139,8 @@ python -m pip install --upgrade pip
 # Install & upgrade all global python modules
 for p in $PYTHON_PACKAGES
 do
-    python -m pip install --upgrade "$p"
+	echo "Installing python package $p"
+	python -m pip install --upgrade "$p"
 done
 
 # Generate pip and poetry completion.
@@ -163,5 +164,5 @@ zinit self-update
 zinit update
 
 # Configure everything.
-source ./macos-config.sh
+#source ./macos-config.sh
 

@@ -1611,13 +1611,6 @@ defaults write com.apple.DiskUtility SidebarShowAllDevices -bool true
 # Auto-play videos when opened with QuickTime Player
 defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
 
-# Set recording quality
-# High:    MGCompressionPresetHighQuality
-# Maximum: MGCompressionPresetMaximumQuality
-defaults write com.apple.QuickTimePlayerX MGRecordingCompressionPresetIdentifier -string 'MGCompressionPresetMaximumQuality'
-
-# Show mouse clicks in screen recordings
-defaults write com.apple.QuickTimePlayerX MGScreenRecordingDocumentShowMouseClicksUserDefaultsKey -bool true
 
 
 ###############################################################################
@@ -1651,10 +1644,6 @@ defaults write com.apple.commerce AutoUpdate -bool true
 # Allow the App Store to reboot machine on macOS updates
 defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 
-# Turn off video autoplay.
-defaults write com.apple.AppStore AutoPlayVideoSetting -string "off"
-defaults write com.apple.AppStore UserSetAutoPlayVideoSetting -int 1
-
 
 ###############################################################################
 # Photos                                                                      #
@@ -1672,33 +1661,11 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
 
 # Disable smart quotes as it’s annoying for messages that contain code
-#defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
 
 # Disable continuous spell checking
-#defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
-# Save history when conversations are closed
-defaults write com.apple.iChat SaveConversationsOnClose -bool true
-
-# Text size
-# 1: Small
-# 7: Large
-defaults write com.apple.iChat TextSize -int 2
-
-# Animate buddy pictures
-#defaults write com.apple.iChat AnimateBuddyPictures -bool false
-
-# Play sound effects
-#defaults write com.apple.messageshelper.AlertsController PlaySoundsKey -bool false
-
-# Notify me when my name is mentioned
-#defaults write com.apple.messageshelper.AlertsController SOAlertsAddressMeKey -bool false
-
-# Notify me about messages form unknown contacts
-#defaults write com.apple.messageshelper.AlertsController NotifyAboutKnockKnockKey -bool false
-
-# Show all buddy pictures in conversations
-#defaults write com.apple.iChat ShowAllBuddyPictures -bool false
 
 ###############################################################################
 # iiNA                                                                        #
@@ -1773,9 +1740,7 @@ for app in "Activity Monitor" \
         "Photos" \
         "Safari" \
         "SystemUIServer" \
-        "Terminal" \
-        "Transmission" \
-        "iCal"; do
+        "Terminal"; do
     killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
