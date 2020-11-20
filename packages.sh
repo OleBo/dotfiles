@@ -51,12 +51,16 @@ tor-browser
 
 # Python packages to install from PyPi.
 PYTHON_PACKAGES="
+cufflinks
 howdoi
 jupyter
 jupyterlab
 meta-package-manager
 neovim
 notebook
+numpy
+pandas
+plotly
 poetry
 pycodestyle
 pydocstyle
