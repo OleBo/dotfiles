@@ -271,6 +271,8 @@ let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 
+let g:python_host_prog = '/Users/bochmann/.pyenv/versions/neovim/bin/python'
+let g:python3_host_prog = '/Users/bochmann/.pyenv/versions/neovim3/bin/python'
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist

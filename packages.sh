@@ -16,16 +16,23 @@ htop
 imagemagick
 jq
 neovim
+openssl
 p7zip
 pandoc
 pipenv
+pyenv
+pyenv-virtualenv
 python
 rclone
+readline
+sqlite3
 testdisk
 tldr
 tree
 unrar
 wget
+xz
+zlib
 "
 
 # Packages to install by the way of Brew's casks.

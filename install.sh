@@ -143,6 +143,26 @@ do
 	python -m pip install --upgrade "$p"
 done
 
+# create pyenv virtualenvironments for neovim 
+# https://github.com/pyenv/pyenv/issues/1643
+PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" \
+CFLAGS="-I$(brew --prefix zlib)/include -I$(brew --prefix sqlite)/include -I$(brew --prefix bzip2)/include" \
+LDFLAGS="-L$(brew --prefix zlib)/lib -L$(brew --prefix sqlite)/lib -L$(brew --prefix bzip2)/lib" \
+pyenv install --patch 3.8.3 <<(curl -sSL https://github.com/python/cpython/commit/8ea6353.patch\?full_index\=1)
+
+pyenv virtualenv 3.8.3 neovim3
+
+pyenv install 2.7.15
+pyenv virtualenv 2.7.15 neovim
+
+# neovim node.js provider
+sudo npm install -g neovim
+#yarn global add neovim #if you use yarn
+
+# neovim Ruby provider
+sudo gem install neovim  # to ensure the neovim RubyGem is installed
+gem environment     # to ensure the gem bin directory is in the PATH
+
 # Generate pip and poetry completion.
 # TODO https://github.com/pypa/pipenv/issues/442
 python -m pip completion --zsh > ~/.zfunc/_pip

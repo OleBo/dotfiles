@@ -360,4 +360,72 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 # Display DeprecationWarning
 #export PYTHONWARNINGS=d
 
+###############################################################################
+# Openssl
+###############################################################################
+# it may not be save: https://marc.info/?l=openbsd-announce&m=141486254309079
+# macOS provides LibreSSL 2.8.3 in /usr/bin/openssl
+
+# to have openssl@1.1 first in your PATH
+export PATH="$(brew --prefix openssl)/bin:$PATH"
+
+# For compilers to find openssl@1.1 
+# (there should be no LDFLAGS or CPPFLAGS mods before)
+export LDFLAGS="-L$(brew --prefix openssl)/lib"
+export CPPFLAGS="-I$(brew --prefix openssl)/include/openssl"
+
+# For pkg-config to find openssl@1.1
+# (there should be no PKG_CONFIG_PATH mods before)
+export PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig"
+
+###############################################################################
+# Sqlight
+###############################################################################
+
+# to have sqlite first in your PATH
+export PATH="$(brew --prefix sqlite)/bin:$PATH"
+
+# For compilers to find sqlite
+export LDFLAGS="-L$(brew --prefix sqlite)/lib $LDFLAGS"
+export CPPFLAGS="-I$(brew --prefix sqlite)/include $CPPFLAGS"
+
+# For pkg-config to find sqlite
+export PKG_CONFIG_PATH="$(brew --prefix sqlite)/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+###############################################################################
+# Bzip2
+###############################################################################
+
+# to have bzip2 first in your PATH
+export PATH="$(brew --prefix bzip2)/bin:$PATH"
+
+# For compilers to find bzip2
+export LDFLAGS="-L$(brew --prefix bzip2)/lib $LDFLAGS"
+export CPPFLAGS="-I$(brew --prefix bzip2)/include $CPPFLAGS"
+
+# For pkg-config to find bzip2
+export PKG_CONFIG_PATH="$(brew --prefix bzip2)/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+###############################################################################
+# Zlib
+###############################################################################
+
+# For compilers to find zlib
+export LDFLAGS="-L$(brew --prefix zlib)/lib $LDFLAGS"
+export CPPFLAGS="-I$(brew --prefix zlib)/include $CPPFLAGS"
+
+# For pkg-config to find zlib
+export PKG_CONFIG_PATH="p:$PKG_CONFIG_PATH"
+
+###############################################################################
+# Pyenv
+###############################################################################
+
+# Load pyenv automatically (there should be no PATH mods after that)
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+
 
