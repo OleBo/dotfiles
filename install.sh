@@ -183,6 +183,12 @@ chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 zinit self-update
 zinit update
 
+# install powerline fonts 
+git clone https://github.com/powerline/fonts.git --depth=1
+cd fonts/ 
+./install.sh 
+rm -rf fonts
+
 # Configure everything.
 #source ./macos-config.sh
 

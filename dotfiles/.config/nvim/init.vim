@@ -70,7 +70,7 @@ endif
 
 filetype plugin indent on      " Indent and plugins by filetype
 
-
+" Map the leader key to SPACE
 let mapleader = "\<Space>"
 let maplocalleader=' '
 
@@ -81,7 +81,7 @@ set ls=2                        " status line always visible
 " Leader-based shortcuts {{{
 " Source: https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
 " Type <Space>o to open a new file
-nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>o :CtrlP<CR> " TODO: CtrlP is not a command
 " Type <Space>w to save file
 nnoremap <Leader>w :w<CR>
 " Copy & paste to system clipboard with <Space>p and <Space>y
@@ -173,7 +173,7 @@ set undoreload=1000
 
 
 " Color scheme.
-syntax enable
+syntax enable			" Enables syntax highlighing
 colorscheme monokai
 
 
@@ -236,10 +236,13 @@ set noshowmode
 let g:airline_theme = 'molokai'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#hunks#non_zero_only = 1
-let g:airline#extensions#tabline#enabled = 2
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 let g:airline#extensions#tabline#buffer_min_count = 1
 
 
@@ -259,7 +262,16 @@ let g:ale_echo_msg_format = '[%linter%] %s'
 
 " Git gutter
 let g:gitgutter_max_signs = 10000
-
+" Use fontawesome icons as signs
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '>'
+let g:gitgutter_sign_removed = '-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = '<'
+" setting the background color of the sign column to your general background color
+let g:gitgutter_override_sign_column_highlight = 1
+highlight SignColumn guibg=bg
+highlight SignColumn ctermbg=bg
 
 " JSON
 " Disable concealing mode altogether.
