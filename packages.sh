@@ -6,7 +6,10 @@ setopt sh_word_split
 # Packages installed from Brew.
 BREW_PACKAGES="
 ack
+arpack
+automakei
 awscli
+ctags
 colordiff
 colortail
 exa
@@ -76,6 +79,7 @@ pylint
 pytest
 pytest-cov
 pytest-sugar
+pytest_tornasync
 setuptools
 tox
 voila

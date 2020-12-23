@@ -38,7 +38,6 @@ call dein#add('ryanoasis/vim-devicons')
 
 " Syntax
 call dein#add('sheerun/vim-polyglot')
-call dein#add('digitaltoad/vim-jade')
 call dein#add('hail2u/vim-css3-syntax')
 call dein#add('vim-scripts/po.vim--gray')
 call dein#add('vim-scripts/plist.vim', {'on_ft': 'plist'})
@@ -51,7 +50,7 @@ call dein#add('w0rp/ale')
 call dein#add('Chiel92/vim-autoformat')
 call dein#add('Shougo/deoplete.nvim')
 call dein#add('Raimondi/delimitMate')
-call dein#add('terryma/vim-multiple-cursors')
+call dein#add('mg979/vim-visual-multi')
 call dein#add('haya14busa/incsearch.vim')
 call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
@@ -272,6 +271,27 @@ let g:gitgutter_sign_modified_removed = '<'
 let g:gitgutter_override_sign_column_highlight = 1
 highlight SignColumn guibg=bg
 highlight SignColumn ctermbg=bg
+
+" delimitMate
+let delimitMate_expand_space = 1 		" expansion of <Space>
+let delimitMate_expand_cr = 1			" expansion of <CR>
+
+" EasyAllign
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" Netrw (NERDtree like setup)
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4   "make it open the file in the previous window
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+augroup ProjectDrawer          "launch right after you’ve entered Vim
+  autocmd!
+  autocmd VimEnter * :Vexplore
+augroup END
 
 " JSON
 " Disable concealing mode altogether.

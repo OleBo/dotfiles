@@ -369,6 +369,9 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 # to have openssl@1.1 first in your PATH
 export PATH="$(brew --prefix openssl)/bin:$PATH"
 
+# specify configure and make options for building CPython
+export PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)"
+
 # For compilers to find openssl@1.1 
 # (there should be no LDFLAGS or CPPFLAGS mods before)
 export LDFLAGS="-L$(brew --prefix openssl)/lib"
@@ -388,6 +391,7 @@ export PATH="$(brew --prefix sqlite)/bin:$PATH"
 # For compilers to find sqlite
 export LDFLAGS="-L$(brew --prefix sqlite)/lib $LDFLAGS"
 export CPPFLAGS="-I$(brew --prefix sqlite)/include $CPPFLAGS"
+export CFLAGS="-I$(brew --prefix sqlite)/include"
 
 # For pkg-config to find sqlite
 export PKG_CONFIG_PATH="$(brew --prefix sqlite)/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -402,6 +406,7 @@ export PATH="$(brew --prefix bzip2)/bin:$PATH"
 # For compilers to find bzip2
 export LDFLAGS="-L$(brew --prefix bzip2)/lib $LDFLAGS"
 export CPPFLAGS="-I$(brew --prefix bzip2)/include $CPPFLAGS"
+export CFLAGS="-I$(brew --prefix bzip2)/include $CFLAGS"
 
 # For pkg-config to find bzip2
 export PKG_CONFIG_PATH="$(brew --prefix bzip2)/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -413,19 +418,61 @@ export PKG_CONFIG_PATH="$(brew --prefix bzip2)/lib/pkgconfig:$PKG_CONFIG_PATH"
 # For compilers to find zlib
 export LDFLAGS="-L$(brew --prefix zlib)/lib $LDFLAGS"
 export CPPFLAGS="-I$(brew --prefix zlib)/include $CPPFLAGS"
+export CFLAGS="-I$(brew --prefix zlib)/include $CFLAGS"
 
 # For pkg-config to find zlib
-export PKG_CONFIG_PATH="p:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$(brew --prefix zlib)/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+###############################################################################
+# openblas
+###############################################################################
+
+export BLAS=BLAS=/usr/local/opt/openblas
+
+# For compilers to find openblas you may need to set:
+export LDFLAGS="-L/usr/local/opt/openblas/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/openblas/include $CPPFLAGS"
+
+# For pkg-config to find openblas you may need to set:
+export PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+###############################################################################
+# LAPACK
+###############################################################################
+
+export LAPACK=/usr/local/opt/lapack
+
+# For compilers to find lapack you may need to set:
+export LDFLAGS="-L/usr/local/opt/lapack/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/lapack/include $CPPFLAGS"
+
+# For pkg-config to find lapack you may need to set:
+export PKG_CONFIG_PATH="/usr/local/opt/lapack/lib/pkgconfig:$PKG_CONFIG_PATH"
+  
+###############################################################################
+# ARPACK
+###############################################################################
+
+export ARPACK=/usr/local/opt/arpack
+
+# For compilers to find arpack you may need to set:
+export LDFLAGS="-L/usr/local/opt/arpack/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/arpack/include $CPPFLAGS"
+
+# For pkg-config to find arpack you may need to set:
+export PKG_CONFIG_PATH="/usr/local/opt/arpack/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 ###############################################################################
 # Pyenv
 ###############################################################################
 
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+
 
 
 
