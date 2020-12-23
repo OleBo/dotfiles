@@ -55,6 +55,10 @@ call dein#add('haya14busa/incsearch.vim')
 call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
 call dein#add('tpope/vim-repeat')
+" dim paragraph above and below the active paragraph
+call dein#add('junegunn/limelight.vim')
+" distraction free writing by removing UI elements and centering everything
+call dein#add('junegunn/goyo.vim')
 
 if has('nvim') == 0
   call dein#add('tpope/vim-sensible')
@@ -117,7 +121,12 @@ endif
 
 
 " GUI
-set number
+set number relativenumber	" enable absolute and relative line numbers
+augroup numbertoggle		" entering insert mode, relative line numbers are turned off
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber 
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber 
+augroup END
 set mouse=a
 set mousehide
 set wrap
@@ -283,15 +292,11 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " Netrw (NERDtree like setup)
-let g:netrw_banner = 0
+let g:netrw_banner = 0			" Removing the banner
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4   "make it open the file in the previous window
+let g:netrw_browse_split = 4	" open in previous window
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
-augroup ProjectDrawer          "launch right after you’ve entered Vim
-  autocmd!
-  autocmd VimEnter * :Vexplore
-augroup END
 
 " JSON
 " Disable concealing mode altogether.
@@ -308,3 +313,4 @@ let g:python3_host_prog = '/Users/bochmann/.pyenv/versions/neovim3/bin/python'
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
+
