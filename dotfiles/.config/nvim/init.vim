@@ -59,6 +59,9 @@ call dein#add('tpope/vim-repeat')
 call dein#add('junegunn/limelight.vim')
 " distraction free writing by removing UI elements and centering everything
 call dein#add('junegunn/goyo.vim')
+" Preview markdown on your browser with synchronised scrolling
+call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],
+					\ 'build': 'sh -c "cd app && yarn install"' })
 
 if has('nvim') == 0
   call dein#add('tpope/vim-sensible')
@@ -87,6 +90,17 @@ set ls=2                        " status line always visible
 nnoremap <Leader>o :CtrlP<CR> " TODO: CtrlP is not a command
 " Type <Space>w to save file
 nnoremap <Leader>w :w<CR>
+" edit your configuration file
+nnoremap <Leader>v :e $MYVIMRC<cr>
+" Reloads configuration file after saving but keep cursor position
+if !exists('*ReloadVimrc')
+   fun! ReloadVimrc()
+       let save_cursor = getcurpos()
+       source $MYVIMRC
+       call setpos('.', save_cursor)
+   endfun
+endif
+autocmd! BufWritePost $MYVIMRC call ReloadVimrc()
 " Copy & paste to system clipboard with <Space>p and <Space>y
 vmap <Leader>y "+y
 vmap <Leader>d "+d
@@ -124,8 +138,8 @@ endif
 set number relativenumber	" enable absolute and relative line numbers
 augroup numbertoggle		" entering insert mode, relative line numbers are turned off
   autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber 
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber 
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
 set mouse=a
 set mousehide
@@ -144,7 +158,21 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
-
+" type 'gf' to go to file, 'gd' to go to local definition, 'gD' to go to global definition,
+" 'gx'to open url under the cursor, Ctrl-6 to jump back; test www.complexlab.org
+set path+=**
+" A small workaround until https://github.com/vim/vim/issues/4738 is fixed
+if has('macunix')
+  function! OpenURLUnderCursor()
+    let s:uri = matchstr(getline('.'), '[a-z]*:\/\/[^ >,;()]*')
+    let s:uri = shellescape(s:uri, 1)
+    if s:uri != ''
+      silent exec "!open '".s:uri."'"
+      :redraw!
+    endif
+  endfunction
+  nnoremap gx :call OpenURLUnderCursor()<CR>
+endif
 
 " Editing
 set expandtab                  " spaces instead of tabs
