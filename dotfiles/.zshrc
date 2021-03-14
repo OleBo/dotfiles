@@ -109,16 +109,14 @@ zle -N history-beginning-search-forward-end history-search-end
 bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
 
-# Enable Ctrl-x-e to edit command line
-# Source: https://nuclearsquid.com/writings/edit-long-commands/
+# Vi mode: 
+bindkey -v
+export KEYTIMEOUT=1
+
+# Enable Ctrl-v to edit command line
 autoload -U edit-command-line
-# Emacs style
 zle -N edit-command-line
-bindkey '^xe' edit-command-line
-bindkey '^x^e' edit-command-line
-# Vi style:
-# zle -N edit-command-line
-# bindkey -M vicmd v edit-command-line
+bindkey '^v' edit-command-line
 
 ###############################################################################
 # Zsh Options
@@ -356,6 +354,17 @@ alias f='open -a Finder ./'
 
 # Replace netstat command on macOS to find ports used by apps
 alias netstat="sudo lsof -i -P"
+
+# Alt-b and Alt-f jump to each word separated by a '/', rather than over an entire /path/location. 
+# make WORDCHARS local to the definition backword-word, 
+# so that kill-word (Alt-Backspace, Ctrl-w) still deletes an entire path. 
+tcsh-backward-delete-word () {
+	local WORDCHARS="${WORDCHARS:s#/#}"
+	zle backward-delete-word
+}
+zle -N tcsh-backward-delete-word           # add it as a keymap
+bindkey "^[^?" tcsh-backward-delete-word   # bind to Alt-Backspace
+bindkey '^W' tcsh-backward-delete-word     # bind to Ctrl-w
 
 ###############################################################################
 # Python
