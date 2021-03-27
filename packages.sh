@@ -36,6 +36,8 @@ unrar
 wget
 xz
 zlib
+fzf
+tmux
 "
 
 # Packages to install by the way of Brew's casks.

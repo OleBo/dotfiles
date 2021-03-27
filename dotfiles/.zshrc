@@ -109,8 +109,10 @@ zle -N history-beginning-search-forward-end history-search-end
 bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
 
-# Vi mode: 
+# Use vi mode
 bindkey -v
+
+# Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
 export KEYTIMEOUT=1
 
 # Enable Ctrl-v to edit command line
