@@ -84,4 +84,3 @@ $ wget https://example.com/foo
         $ cd ~/dotfiles
         $ ./install.sh 2>&1 | tee ./install.log
    Runs install.sh and send stdout/err to file install.log and terminal.
-
