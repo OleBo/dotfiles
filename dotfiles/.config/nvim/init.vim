@@ -54,6 +54,8 @@ call dein#add('mg979/vim-visual-multi')
 call dein#add('haya14busa/incsearch.vim')
 call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
+call dein#add('goerz/jupytext.vim')
+" editing Jupyter notebook (ipynb) files through jupytext."
 call dein#add('tpope/vim-repeat')
 " dim paragraph above and below the active paragraph
 call dein#add('junegunn/limelight.vim')
