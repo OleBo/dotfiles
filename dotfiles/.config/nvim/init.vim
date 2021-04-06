@@ -31,7 +31,31 @@ call dein#add('crusoexia/vim-monokai')
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('Yggdroot/indentLine')
-call dein#add('airblade/vim-gitgutter')
+call dein#add('airblade/vim-gitgutter')    " shows git changes in gutter
+call dein#add('tpope/vim-fugitive')        " allows git commands in vim session
+call dein#add('easymotion/vim-easymotion') " go to any word '\\w', '\\e', '\\b'
+call dein#add('KKPMW/vim-sendtowindow')    " send commands to REPL '\k' - top
+call dein#add('yuttie/comfortable-motion.vim') " scrolling 'C-d', 'C-u'
+call dein#add('ncm2/ncm2')                 " completition-[dep]:
+call dein#add('roxma/nvim-yarp')           " remote plugin framawork for ncm2
+call dein#add('ncm2/ncm2-bufword')         " complete words in buffer
+call dein#add('ncm2/ncm2-path')            " complete paths
+call dein#add('ncm2/ncm2-jedi')                 " python completion
+autocmd BufEnter * call ncm2#enable_for_buffer() " enable ncm2 for all buffers
+set completeopt=noinsert,menuone,noselect        " see :help Ncm2PopupOpen
+
+call dein#add('fisadev/vim-isort') " python sort import [dep] pip install isort
+                                   " :Isort
+
+call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],'build': 'sh -c "cd app && yarn install"' })
+let g:mkdp_auto_start = 0 " call :MarkdownPreview
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip =''
+let g:mkdp_browser = ''
+
 call dein#add('alfredodeza/coveragepy.vim')
 call dein#add('ervandew/supertab')
 call dein#add('ryanoasis/vim-devicons')
@@ -56,14 +80,18 @@ call dein#add('junegunn/vim-easy-align')
 call dein#add('tpope/vim-surround')
 call dein#add('goerz/jupytext.vim')
 " editing Jupyter notebook (ipynb) files through jupytext."
+
+let g:jupytext_enable = 1 "deactivate this plugin by setting this to 0
+let g:jupytext_command = '$HOME/.pyenv/versions/neovim3/bin/jupytext'
+let g:jupytext_fmt = 'py' "format to which to convert the ipynb data (md,py,R)
+let g:jupytext_to_ipynb_opts = '--to=ipynb --update'
+let g:jupytext_print_debug_msgs = 1 "If set to 1, print debug messages
+
 call dein#add('tpope/vim-repeat')
 " dim paragraph above and below the active paragraph
 call dein#add('junegunn/limelight.vim')
 " distraction free writing by removing UI elements and centering everything
 call dein#add('junegunn/goyo.vim')
-" Preview markdown on your browser with synchronised scrolling
-call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],
-					\ 'build': 'sh -c "cd app && yarn install"' })
 
 if has('nvim') == 0
   call dein#add('tpope/vim-sensible')
@@ -135,6 +163,23 @@ if &term =~ "xterm.*"
     cmap <Esc>[201~ <nop>
 endif
 
+" window splits
+set splitbelow splitright
+"remap split navigation ti just CTRL + hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+" make adjusting splits a bit more friendly
+"noremap <silent> <C-Left> :vertical resize +3<CR>
+"noremap <silent> <C-Right> :vertical resize -3<CR>
+"noremap <silent> <C-Up> :resize -3<CR>
+"noremap <silent> <C-Down> :resize +3<CR>
+" Change 2 split windows from vertical to horiz. or horiz. to vertical
+"map <Leader>th <C-w>t<C-w>H
+"map <Leader>tk <C-w>t<C-w>K
+" Start terminals for Python session '\tp'
+map <Leader>tp :new term://zsh<CR>ipython<CR><C-\><C-n><C-w>k
 
 " GUI
 set number relativenumber	" enable absolute and relative line numbers
