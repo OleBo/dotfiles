@@ -27,7 +27,7 @@ call dein#add('Shougo/dein.vim')
 " Color scheme
 call dein#add('crusoexia/vim-monokai')
 
-" GUI
+" GUI  https://gist.github.com/xvzftube/5380163d8fc9090796eb6fcc61fe022d
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('Yggdroot/indentLine')
@@ -47,7 +47,8 @@ set completeopt=noinsert,menuone,noselect        " see :help Ncm2PopupOpen
 call dein#add('fisadev/vim-isort') " python sort import [dep] pip install isort
                                    " :Isort
 
-call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'],'build': 'sh -c "cd app && yarn install"' })
+call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['md','markdown', 'pandoc.markdown', 'rmd'],
+					\ 'build': 'sh -c ' })
 let g:mkdp_auto_start = 0 " call :MarkdownPreview
 let g:mkdp_auto_close = 1
 let g:mkdp_refresh_slow = 0
@@ -55,6 +56,10 @@ let g:mkdp_command_for_global = 0
 let g:mkdp_open_to_the_world = 0
 let g:mkdp_open_ip =''
 let g:mkdp_browser = ''
+" example
+nmap <C-s> <Plug>MarkdownPreview
+nmap <M-s> <Plug>MarkdownPreviewStop
+nmap <C-p> <Plug>MarkdownPreviewToggle
 
 call dein#add('alfredodeza/coveragepy.vim')
 call dein#add('ervandew/supertab')
@@ -82,7 +87,7 @@ call dein#add('goerz/jupytext.vim')
 " editing Jupyter notebook (ipynb) files through jupytext."
 
 let g:jupytext_enable = 1 "deactivate this plugin by setting this to 0
-let g:jupytext_command = '$HOME/.pyenv/versions/neovim3/bin/jupytext'
+let g:jupytext_command = '$HOME/.pyenv/versions/3.9.2/bin/jupytext'
 let g:jupytext_fmt = 'py' "format to which to convert the ipynb data (md,py,R)
 let g:jupytext_to_ipynb_opts = '--to=ipynb --update'
 let g:jupytext_print_debug_msgs = 1 "If set to 1, print debug messages
@@ -383,8 +388,11 @@ let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 
-let g:python_host_prog = '/Users/bochmann/.pyenv/versions/neovim/bin/python'
-let g:python3_host_prog = '/Users/bochmann/.pyenv/versions/neovim3/bin/python'
+let g:python_host_prog = '/Users/bochmann/.pyenv/versions/2.7.18/bin/python'
+let g:python3_host_prog = '/Users/bochmann/.pyenv/versions/3.9.2/bin/python'
+
+let $NVIM_PYTHON_LOG_FILE="/tmp/nvim_log"
+let $NVIM_PYTHON_LOG_LEVEL="DEBUG"
 
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist

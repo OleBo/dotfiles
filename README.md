@@ -1,10 +1,10 @@
-# Dotfiles 
+# Dotfiles
 ## Instaled brew package
 - ack: Search tool like grep, but optimized for programmers
 https://beyondgrep.com/
 $  ack --output='$. $_' '^Installing brew package' install.log
 - awscli: Official Amazon AWS command-line interface
-https://aws.amazon.com/cli/
+htps://aws.amazon.com/cli/
 $ aws configure
 - colordiff: Color-highlighted diff(1) output
 https://www.colordiff.org/
@@ -39,9 +39,9 @@ $ 7z a archive.7z .
 - pandoc: universal document converter
 https://pandoc.org/installing.html
 $ pandoc README.md
-- python: python3 and setuptools in 
+- python: python3 and setuptools in
     - /usr/local/opt/python/libexec/bin
-    - /usr/local/Cellar/python@3.9/3.9.0_1/bin/ 
+    - /usr/local/Cellar/python@3.9/3.9.0_1/bin/
     - /usr/local/Frameworks/Python.framework/Versions/3.9/bin/
 - rclone: Rsync for cloud storage
 https://rclone.org https://rclone.org/dropbox/ https://rclone.org/drive/
@@ -59,7 +59,7 @@ http://mama.indstate.edu/users/ice/tree/
 $ tree .
 - unrar: Extract, view, and test RAR archives
 https://www.rarlab.com/
-$ unrar x archive.rar 
+$ unrar x archive.rar
 - wget: Internet file retriever
 https://www.gnu.org/software/wget
 $ wget https://example.com/foo
