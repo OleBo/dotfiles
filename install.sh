@@ -112,7 +112,17 @@ mas lucky "Pages"
 mas lucky "Final Cut Pro"
 mas lucky "Logic Pro"
 mas lucky "MainStage"
-#mas lucky "Motion"
+mas lucky "Xcode"
+mas lucky "Swiftify for Xcode"
+mas lucky "Developer"
+mas lucky "System Designer"
+mas lucky "LanguageTranslator"
+mas lucky "Transporter"
+mas lucky "Motion"
+mas lucky "Jami"
+mas lucky "Text Toolset"
+mas lucky "Compressor"
+mas lucky "Whiteboard"
 
 # Open apps so I'll not forget to login
 open -a Dropbox

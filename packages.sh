@@ -7,37 +7,49 @@ setopt sh_word_split
 BREW_PACKAGES="
 ack
 arpack
-automakei
+automakei ?
 awscli
+bzip2
+cmatrix
 ctags
 colordiff
 colortail
+docker
 exa
+ffmpeg
+figlet
+fzf
+gh
+go
 graphviz
 grc
+hdf5
+highlight
 htop
+ilmbase
 imagemagick
 jq
+lapack
+mas
 neovim
 openssl
 p7zip
 pandoc
 pipenv
 pyenv
+poetry
 pyenv-virtualenv
-python
+python@3.8
 rclone
-readline
-sqlite3
+ruby
+subversion
 testdisk
 tldr
+tmux
 tree
 unrar
 wget
-xz
 zlib
-fzf
-tmux
 "
 
 # Packages to install by the way of Brew's casks.
@@ -46,6 +58,9 @@ chromium
 darktable
 docker
 dropbox
+dupeguru
+epubquicklook
+font-hack-nerd-font 
 fork
 gimp
 google-backup-and-sync
@@ -55,10 +70,19 @@ iina
 java
 macdown
 mactex
-slack
+qlcolorcode
+qlimagesize
+qlmarkdown
+qlstephen
+qlvideo
+quicklook-json
 raspberry-pi-imager
+skim
+slack
+suspicious-package
 textmate
 tor-browser
+xquartz
 "
 
 # Python packages to install from PyPi.

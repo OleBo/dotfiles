@@ -628,3 +628,12 @@ dotfiles/.config/OpenMV/
 dotfiles/.config/configstore/
 dotfiles/.config/gtk-2.0/
 dotfiles/.config/htop/
+dotfiles/.config/gh/hosts.yml
+dotfiles/.config/gcloud/legacy_credentials
+dotfiles/.config/gcloud/logs
+dotfiles/.config/gcloud/virtenv
+dotfiles/.config/gcloud/access_tokens.db
+dotfiles/.config/gcloud/credentials.db
+dotfiles/.config/gcloud/.last_opt_in_prompt.yaml
+dotfiles/.config/gcloud/.last_survey_prompt.yaml
+dotfiles/.config/gcloud/.last_update_check.json

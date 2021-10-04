@@ -14,8 +14,8 @@ let dein_dir = plugins_dir . '/repos/' . dein_repo
 " https://github.com/Shougo/dein.vim#quick-start
 " https://github.com/stuarthicks/dotfiles/blob/master/neovim/.config/nvim/init.vim
 if empty(glob(dein_dir))
-  exec 'silent !mkdir -p ' . dein_dir
-  exec '!git clone ' . dein_url . ' ' . dein_dir
+    exec 'silent !mkdir -p ' . dein_dir
+    exec '!git clone ' . dein_url . ' ' . dein_dir
 endif
 exec 'set runtimepath^=' . dein_dir
 
@@ -31,8 +31,13 @@ call dein#add('crusoexia/vim-monokai')
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('Yggdroot/indentLine')
+call dein#add('SirVer/ultisnips')
+call dein#add('honza/vim-snippets')
+call dein#add('lervag/vimtex')
 call dein#add('airblade/vim-gitgutter')    " shows git changes in gutter
+call dein#add('ctrlpvim/ctrlp.vim')        " full path fuzzy file finder
 call dein#add('tpope/vim-fugitive')        " allows git commands in vim session
+call dein#add('tpope/vim-rhubarb')         " GitHub extension for fugitive.vim
 call dein#add('easymotion/vim-easymotion') " go to any word '\\w', '\\e', '\\b'
 call dein#add('KKPMW/vim-sendtowindow')    " send commands to REPL '\k' - top
 call dein#add('yuttie/comfortable-motion.vim') " scrolling 'C-d', 'C-u'
@@ -45,11 +50,10 @@ autocmd BufEnter * call ncm2#enable_for_buffer() " enable ncm2 for all buffers
 set completeopt=noinsert,menuone,noselect        " see :help Ncm2PopupOpen
 
 call dein#add('fisadev/vim-isort') " python sort import [dep] pip install isort
-                                   " :Isort
+" :Isort
 
-call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['md','markdown', 'pandoc.markdown', 'rmd'],
-					\ 'build': 'sh -c ' })
-let g:mkdp_auto_start = 0 " call :MarkdownPreview
+call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['md','markdown', 'pandoc.markdown', 'rmd'], 'build': 'sh -c ' })
+let g:mkdp_auto_start = 1 " call :MarkdownPreview
 let g:mkdp_auto_close = 1
 let g:mkdp_refresh_slow = 0
 let g:mkdp_command_for_global = 0
@@ -73,11 +77,13 @@ call dein#add('vim-scripts/plist.vim', {'on_ft': 'plist'})
 call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
 
 " Linters
-call dein#add('w0rp/ale')
-
+call dein#add('w0rp/ale') " using flake8
+" management of tags files
+" - It will (re)generate tag files as you work while staying out of your way.
+call dein#add('ludovicchabant/vim-gutentags')
 " Edition
 call dein#add('Chiel92/vim-autoformat')
-call dein#add('Shougo/deoplete.nvim')
+call dein#add('Shougo/deoplete.nvim') " autocomplete framework
 call dein#add('Raimondi/delimitMate')
 call dein#add('mg979/vim-visual-multi')
 call dein#add('haya14busa/incsearch.vim')
@@ -99,13 +105,13 @@ call dein#add('junegunn/limelight.vim')
 call dein#add('junegunn/goyo.vim')
 
 if has('nvim') == 0
-  call dein#add('tpope/vim-sensible')
+    call dein#add('tpope/vim-sensible')
 endif
 
 call dein#end()
 
 if dein#check_install()
-  call dein#install()
+    call dein#install()
 endif
 
 
@@ -129,11 +135,11 @@ nnoremap <Leader>w :w<CR>
 nnoremap <Leader>v :e $MYVIMRC<cr>
 " Reloads configuration file after saving but keep cursor position
 if !exists('*ReloadVimrc')
-   fun! ReloadVimrc()
-       let save_cursor = getcurpos()
-       source $MYVIMRC
-       call setpos('.', save_cursor)
-   endfun
+    fun! ReloadVimrc()
+        let save_cursor = getcurpos()
+        source $MYVIMRC
+        call setpos('.', save_cursor)
+    endfun
 endif
 autocmd! BufWritePost $MYVIMRC call ReloadVimrc()
 " Copy & paste to system clipboard with <Space>p and <Space>y
@@ -143,7 +149,7 @@ nmap <Leader>p "+p
 nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
-" Enter visual line mode
+" Enter visual line mode with <Space><Space>
 nmap <Leader><Leader> V
 
 
@@ -178,8 +184,8 @@ nnoremap <C-l> <C-w>l
 " make adjusting splits a bit more friendly
 "noremap <silent> <C-Left> :vertical resize +3<CR>
 "noremap <silent> <C-Right> :vertical resize -3<CR>
-"noremap <silent> <C-Up> :resize -3<CR>
-"noremap <silent> <C-Down> :resize +3<CR>
+noremap <silent> <ALT-Up> :resize -3<CR>
+noremap <silent> <ALT-Down> :resize +3<CR>
 " Change 2 split windows from vertical to horiz. or horiz. to vertical
 "map <Leader>th <C-w>t<C-w>H
 "map <Leader>tk <C-w>t<C-w>K
@@ -187,11 +193,11 @@ nnoremap <C-l> <C-w>l
 map <Leader>tp :new term://zsh<CR>ipython<CR><C-\><C-n><C-w>k
 
 " GUI
-set number relativenumber	" enable absolute and relative line numbers
-augroup numbertoggle		" entering insert mode, relative line numbers are turned off
-  autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+set number relativenumber   " enable absolute and relative line numbers
+augroup numbertoggle        " entering insert mode, relative line numbers are turned off
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+    autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
 set mouse=a
 set mousehide
@@ -215,15 +221,15 @@ set tm=500
 set path+=**
 " A small workaround until https://github.com/vim/vim/issues/4738 is fixed
 if has('macunix')
-  function! OpenURLUnderCursor()
-    let s:uri = matchstr(getline('.'), '[a-z]*:\/\/[^ >,;()]*')
-    let s:uri = shellescape(s:uri, 1)
-    if s:uri != ''
-      silent exec "!open '".s:uri."'"
-      :redraw!
-    endif
-  endfunction
-  nnoremap gx :call OpenURLUnderCursor()<CR>
+    function! OpenURLUnderCursor()
+        let s:uri = matchstr(getline('.'), '[a-z]*:\/\/[^ >,;()]*')
+        let s:uri = shellescape(s:uri, 1)
+        if s:uri != ''
+            silent exec "!open '".s:uri."'"
+            :redraw!
+        endif
+    endfunction
+    nnoremap gx :call OpenURLUnderCursor()<CR>
 endif
 
 " Editing
@@ -259,9 +265,11 @@ set history=1000
 set undofile
 set undoreload=1000
 
+" tell vim to look for the ctags index file in the source directory
+set tags=tags
 
 " Color scheme.
-syntax enable			" Enables syntax highlighing
+syntax enable           " Enables syntax highlighing
 colorscheme monokai
 
 
@@ -302,20 +310,20 @@ autocmd BufWritePre,FileWritePost * setlocal nobomb
 
 " Execution permissions by default to shebang (#!) files
 augroup shebang_chmod
-  autocmd!
-  autocmd BufNewFile  * let b:brand_new_file = 1
-  autocmd BufWritePost * unlet! b:brand_new_file
-  autocmd BufWritePre *
-        \ if exists('b:brand_new_file') |
-        \   if getline(1) =~ '^#!' |
-        \     let b:chmod_post = '+x' |
-        \   endif |
-        \ endif
-  autocmd BufWritePost,FileWritePost *
-        \ if exists('b:chmod_post') && executable('chmod') |
-        \   silent! execute '!chmod '.b:chmod_post.' "<afile>"' |
-        \   unlet b:chmod_post |
-        \ endif
+    autocmd!
+    autocmd BufNewFile  * let b:brand_new_file = 1
+    autocmd BufWritePost * unlet! b:brand_new_file
+    autocmd BufWritePre *
+                \ if exists('b:brand_new_file') |
+                \   if getline(1) =~ '^#!' |
+                \     let b:chmod_post = '+x' |
+                \   endif |
+                \ endif
+    autocmd BufWritePost,FileWritePost *
+                \ if exists('b:chmod_post') && executable('chmod') |
+                \   silent! execute '!chmod '.b:chmod_post.' "<afile>"' |
+                \   unlet b:chmod_post |
+                \ endif
 augroup END
 
 
@@ -333,6 +341,10 @@ let g:airline#extensions#tabline#right_sep = ''
 let g:airline#extensions#tabline#right_alt_sep = ''
 let g:airline#extensions#tabline#buffer_min_count = 1
 
+" To make vimtex work with deoplete
+call deoplete#custom#var('omni', 'input_patterns', {
+            \ 'tex': g:vimtex#re#deoplete
+            \})
 
 " indentLine
 let g:indentLine_char = '┊'
@@ -362,8 +374,8 @@ highlight SignColumn guibg=bg
 highlight SignColumn ctermbg=bg
 
 " delimitMate
-let delimitMate_expand_space = 1 		" expansion of <Space>
-let delimitMate_expand_cr = 1			" expansion of <CR>
+let delimitMate_expand_space = 1        " expansion of <Space>
+let delimitMate_expand_cr = 1           " expansion of <CR>
 
 " EasyAllign
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -372,9 +384,9 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " Netrw (NERDtree like setup)
-let g:netrw_banner = 0			" Removing the banner
+let g:netrw_banner = 0          " Removing the banner
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4	" open in previous window
+let g:netrw_browse_split = 4    " open in previous window
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
 
@@ -397,3 +409,46 @@ let $NVIM_PYTHON_LOG_LEVEL="DEBUG"
 " Plist
 au BufRead,BufNewFile *.plist set filetype=plist
 
+" Autoformat upon saving file
+au BufWrite * :Autoformat
+let g:autoformat_verbosemode=2
+
+" tex:   write the server address to temp file and read the server address
+" from that file when we run the nvr command
+" https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/
+function! SetServerName()
+    if has('win32')
+        let nvim_server_file = $TEMP . "/curnvimserver.txt"
+    else
+        let nvim_server_file = "/tmp/curnvimserver.txt"
+    endif
+    let cmd = printf("echo %s > %s", v:servername, nvim_server_file)
+    call system(cmd)
+endfunction
+
+augroup vimtex_common
+    autocmd!
+    autocmd FileType tex call SetServerName()
+augroup END
+
+let g:vimtex_view_method = "skim"
+" https://jdhao.github.io/2019/03/26/nvim_latex_write_preview/
+let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+
+augroup vimtex_mac
+    autocmd!
+    autocmd User VimtexEventCompileSuccess call UpdateSkim()
+augroup END
+
+function! UpdateSkim() abort
+    let l:out = b:vimtex.out()
+    let l:src_file_path = expand('%:p')
+    let l:cmd = [g:vimtex_view_general_viewer, '-r']
+
+    if !empty(system('pgrep Skim'))
+        call extend(l:cmd, ['-g'])
+    endif
+
+    call jobstart(l:cmd + [line('.'), l:out, l:src_file_path])
+endfunction
