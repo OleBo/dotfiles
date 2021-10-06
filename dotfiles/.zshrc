@@ -387,20 +387,23 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 # it may not be save: https://marc.info/?l=openbsd-announce&m=141486254309079
 # macOS provides LibreSSL 2.8.3 in /usr/bin/openssl
 
-# to have openssl@1.1 first in your PATH
-export PATH="$(brew --prefix openssl)/bin:$PATH"
+# to have openssl@3.0.0 first in your PATH
+export PATH="$(brew --prefix openssl@1.1)/bin:$PATH"
 
 # specify configure and make options for building CPython
-export PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)"
+export PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl@1.1)"
+
+# for Python 3.7+ https://github.com/pyenv/pyenv/wiki/Common-build-problems
+export CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl@1.1)"
 
 # For compilers to find openssl@1.1 
 # (there should be no LDFLAGS or CPPFLAGS mods before)
-export LDFLAGS="-L$(brew --prefix openssl)/lib"
-export CPPFLAGS="-I$(brew --prefix openssl)/include/openssl"
+export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib"
+export CPPFLAGS="-I$(brew --prefix openssl@1.1)/include/openssl"
 
 # For pkg-config to find openssl@1.1
 # (there should be no PKG_CONFIG_PATH mods before)
-export PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig"
+export PKG_CONFIG_PATH="$(brew --prefix openssl@1.1)/lib/pkgconfig"
 
 ###############################################################################
 # Sqlight

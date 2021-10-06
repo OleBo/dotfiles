@@ -53,7 +53,7 @@ if test ! "$(command -v brew)"
 then
     # Install Homebrew without prompting for user confirmation.
     # See: https://discourse.brew.sh/t/silent-automated-homebrew-install/3180
-    CI=true ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 brew analytics off
 brew update
@@ -88,7 +88,7 @@ done
 for PACKAGE in $CASK_PACKAGES
 do
 	echo "Installing cask package $PACKAGE"
-	brew cask install "$PACKAGE"
+	brew install --cask "$PACKAGE"
 done
 
 # htop-osx requires root privileges to correctly display all running processes.

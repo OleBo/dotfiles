@@ -400,8 +400,8 @@ let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 
-let g:python_host_prog = '/Users/bochmann/.pyenv/versions/2.7.18/bin/python'
-let g:python3_host_prog = '/Users/bochmann/.pyenv/versions/3.9.2/bin/python'
+let g:python_host_prog = '/usr/bin/python2'
+let g:python3_host_prog = '/usr/local/opt/python/libexec/bin/python'
 
 let $NVIM_PYTHON_LOG_FILE="/tmp/nvim_log"
 let $NVIM_PYTHON_LOG_LEVEL="DEBUG"

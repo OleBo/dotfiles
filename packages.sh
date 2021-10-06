@@ -32,7 +32,7 @@ jq
 lapack
 mas
 neovim
-openssl
+node
 p7zip
 pandoc
 pipenv
@@ -65,15 +65,14 @@ fork
 gimp
 google-backup-and-sync
 google-cloud-sdk
-google-drive-file-stream
+google-chrome
+google-drive
 iina
-java
 macdown
 mactex
-qlcolorcode
+nextcloud
 qlimagesize
 qlmarkdown
-qlstephen
 qlvideo
 quicklook-json
 raspberry-pi-imager
@@ -83,6 +82,7 @@ suspicious-package
 textmate
 tor-browser
 xquartz
+zoom
 "
 
 # Python packages to install from PyPi.
