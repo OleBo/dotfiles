@@ -382,6 +382,16 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 #export PYTHONWARNINGS=d
 
 ###############################################################################
+# ruby
+###############################################################################
+
+# to have ruby first in your PATH
+export $(brew --prefix ruby@3.0)/bin:$PATH"
+
+# to have binaries installed by gem  first in your PATH
+export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+
+###############################################################################
 # Openssl
 ###############################################################################
 # it may not be save: https://marc.info/?l=openbsd-announce&m=141486254309079
@@ -491,12 +501,12 @@ export PKG_CONFIG_PATH="/usr/local/opt/arpack/lib/pkgconfig:$PKG_CONFIG_PATH"
 ###############################################################################
 
 eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 
+eval "$(pyenv virtualenv-init -)"
 
 
 

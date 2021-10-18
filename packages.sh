@@ -37,8 +37,8 @@ p7zip
 pandoc
 pipenv
 pyenv
-poetry
 pyenv-virtualenv
+poetry
 python@3.8
 rclone
 ruby

@@ -80,7 +80,7 @@ call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
 call dein#add('w0rp/ale') " using flake8
 " management of tags files
 " - It will (re)generate tag files as you work while staying out of your way.
-call dein#add('ludovicchabant/vim-gutentags')
+"call dein#add('ludovicchabant/vim-gutentags')
 " Edition
 call dein#add('Chiel92/vim-autoformat')
 call dein#add('Shougo/deoplete.nvim') " autocomplete framework
@@ -394,6 +394,8 @@ let g:netrw_winsize = 25
 " Disable concealing mode altogether.
 let g:vim_json_syntax_conceal = 0
 
+" To use fzf in Vim
+set rtp+=/usr/local/opt/fzf
 
 " Markdown
 " Disable element concealing.
@@ -401,7 +403,7 @@ let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 
 let g:python_host_prog = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/local/opt/python/libexec/bin/python'
+let g:python3_host_prog = '~/.venvs/neovim/bin/python'
 
 let $NVIM_PYTHON_LOG_FILE="/tmp/nvim_log"
 let $NVIM_PYTHON_LOG_LEVEL="DEBUG"
