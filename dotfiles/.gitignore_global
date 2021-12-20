@@ -623,9 +623,11 @@ tags
 pyvenv.cfg
 pip-selfcheck.json
 
-
+dotfiles/.DS_Store
+dotfiles/.config/.DS_Store
 dotfiles/.config/OpenMV/
 dotfiles/.config/configstore/
+dotfiles/.config/darktable/
 dotfiles/.config/gtk-2.0/
 dotfiles/.config/htop/
 dotfiles/.config/gh/hosts.yml
@@ -637,3 +639,11 @@ dotfiles/.config/gcloud/credentials.db
 dotfiles/.config/gcloud/.last_opt_in_prompt.yaml
 dotfiles/.config/gcloud/.last_survey_prompt.yaml
 dotfiles/.config/gcloud/.last_update_check.json
+dotfiles/.config/nvim/.DS_Store
+dotfiles/.config/nvim/dein/
+dotfiles/.config/nvim/tmp/
+dotfiles/.ipython/.DS_Store
+dotfiles/.ipython/profile_default/.DS_Store
+
+install.log
+tags.lock
