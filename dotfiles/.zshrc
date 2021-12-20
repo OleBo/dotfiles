@@ -2,7 +2,7 @@
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 ###############################################################################
@@ -24,31 +24,31 @@ PATH_CACHE="${HOME}/.path-env-cache"
 # Force a cache refresh if file doesn't exist or older than 7 days.
 # Source: https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-3109177
 () {
-    setopt extendedglob local_options
-    if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
-        # Ordered list of path.
-        PATH_LIST=(
-            /usr/local/sbin
-            $(brew --prefix coreutils)/libexec/gnubin
-            $(brew --prefix grep)/libexec/gnubin
-            $(brew --prefix findutils)/libexec/gnubin
-            $(brew --prefix gnu-sed)/libexec/gnubin
-            $(brew --prefix gnu-tar)/libexec/gnubin
-            $(brew --prefix openssh)/bin
-            $(brew --prefix curl)/bin
-            $(brew --prefix python)/libexec/bin
-        )
-        print -rl -- ${PATH_LIST} > ${PATH_CACHE}
-    fi
+setopt extendedglob local_options
+if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
+    # Ordered list of path.
+    PATH_LIST=(
+        /usr/local/sbin
+        $(brew --prefix coreutils)/libexec/gnubin
+        $(brew --prefix grep)/libexec/gnubin
+        $(brew --prefix findutils)/libexec/gnubin
+        $(brew --prefix gnu-sed)/libexec/gnubin
+        $(brew --prefix gnu-tar)/libexec/gnubin
+        $(brew --prefix openssh)/bin
+        $(brew --prefix curl)/bin
+        $(brew --prefix python)/libexec/bin
+    )
+    print -rl -- ${PATH_LIST} > ${PATH_CACHE}
+fi
 }
 
 # Cache exists and has been refreshed in the last 24 hours: load it.
 # Source: https://stackoverflow.com/a/41212803
 for line in "${(@f)"$(<${PATH_CACHE})"}"
-{
-    # Prepend paths. Source: https://stackoverflow.com/a/9352979
-    path[1,0]=${line}
-}
+    {
+        # Prepend paths. Source: https://stackoverflow.com/a/9352979
+        path[1,0]=${line}
+    }
 
 ###############################################################################
 # File associations, i.e. suffix aliases
@@ -100,7 +100,7 @@ HISTORY_IGNORE='(l|ls|ll|cd|cd ..|pwd|exit|date|history)'
 # See: https://github.com/romkatv/powerlevel10k#extra-space-without-background-on-the-right-side-of-right-prompt
 ZLE_RPROMPT_INDENT=0
 
-# Binds Up and Down to a history search, backwards and forwards and have the cursor placed 
+# Binds Up and Down to a history search, backwards and forwards and have the cursor placed
 # at the end of the line once you have selected your desired command from zsh's history
 # Source: https://unix.stackexchange.com/a/97844
 autoload -U history-search-end
@@ -319,10 +319,10 @@ export LESS_TERMCAP_ZW=$(tput rsupm)
 # output clean, tidy and easier to read.
 # Source: https://apple.stackexchange.com/a/353650
 find() {
-  { LC_ALL=C command find "$@" 3>&2 2>&1 1>&3 | \
-    grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
-    [ $? = 1 ]; \
-  } 3>&2 2>&1
+    { LC_ALL=C command find "$@" 3>&2 2>&1 1>&3 | \
+        grep -v -e 'Permission denied' -e 'Operation not permitted' >&3; \
+        [ $? = 1 ]; \
+    } 3>&2 2>&1
 }
 
 # Default options for fd, a faster find.
@@ -357,12 +357,12 @@ alias f='open -a Finder ./'
 # Replace netstat command on macOS to find ports used by apps
 alias netstat="sudo lsof -i -P"
 
-# Alt-b and Alt-f jump to each word separated by a '/', rather than over an entire /path/location. 
-# make WORDCHARS local to the definition backword-word, 
-# so that kill-word (Alt-Backspace, Ctrl-w) still deletes an entire path. 
+# Alt-b and Alt-f jump to each word separated by a '/', rather than over an entire /path/location.
+# make WORDCHARS local to the definition backword-word,
+# so that kill-word (Alt-Backspace, Ctrl-w) still deletes an entire path.
 tcsh-backward-delete-word () {
-	local WORDCHARS="${WORDCHARS:s#/#}"
-	zle backward-delete-word
+local WORDCHARS="${WORDCHARS:s#/#}"
+zle backward-delete-word
 }
 zle -N tcsh-backward-delete-word           # add it as a keymap
 bindkey "^[^?" tcsh-backward-delete-word   # bind to Alt-Backspace
@@ -386,7 +386,7 @@ export PYTHONSTARTUP="$HOME/.python_startup.py"
 ###############################################################################
 
 # to have ruby first in your PATH
-export $(brew --prefix ruby@3.0)/bin:$PATH"
+export PATH="$(brew --prefix ruby@3.0)/bin:$PATH"
 
 # to have binaries installed by gem  first in your PATH
 export PATH="/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
@@ -406,7 +406,7 @@ export PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl@1.1)"
 # for Python 3.7+ https://github.com/pyenv/pyenv/wiki/Common-build-problems
 export CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl@1.1)"
 
-# For compilers to find openssl@1.1 
+# For compilers to find openssl@1.1
 # (there should be no LDFLAGS or CPPFLAGS mods before)
 export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib"
 export CPPFLAGS="-I$(brew --prefix openssl@1.1)/include/openssl"
@@ -482,7 +482,7 @@ export CPPFLAGS="-I/usr/local/opt/lapack/include $CPPFLAGS"
 
 # For pkg-config to find lapack you may need to set:
 export PKG_CONFIG_PATH="/usr/local/opt/lapack/lib/pkgconfig:$PKG_CONFIG_PATH"
-  
+
 ###############################################################################
 # ARPACK
 ###############################################################################
@@ -501,12 +501,8 @@ export PKG_CONFIG_PATH="/usr/local/opt/arpack/lib/pkgconfig:$PKG_CONFIG_PATH"
 ###############################################################################
 
 eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
-
-eval "$(pyenv virtualenv-init -)"
-
-
-

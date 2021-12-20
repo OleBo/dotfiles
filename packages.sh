@@ -40,6 +40,7 @@ pyenv
 pyenv-virtualenv
 poetry
 python@3.8
+qt
 rclone
 ruby
 subversion
@@ -60,7 +61,7 @@ docker
 dropbox
 dupeguru
 epubquicklook
-font-hack-nerd-font 
+font-hack-nerd-font
 fork
 gimp
 google-backup-and-sync
