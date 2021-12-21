@@ -497,6 +497,15 @@ export CPPFLAGS="-I/usr/local/opt/arpack/include $CPPFLAGS"
 export PKG_CONFIG_PATH="/usr/local/opt/arpack/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 ###############################################################################
+# Perl
+###############################################################################
+PATH="/Users/bochmann/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/Users/bochmann/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/Users/bochmann/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/Users/bochmann/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/Users/bochmann/perl5"; export PERL_MM_OPT;
+
+###############################################################################
 # Pyenv
 ###############################################################################
 
@@ -506,3 +515,5 @@ eval "$(pyenv virtualenv-init -)"
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
+
+
