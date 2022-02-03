@@ -7,7 +7,7 @@ setopt sh_word_split
 BREW_PACKAGES="
 ack
 arpack
-automakei ?
+automake
 awscli
 bzip2
 cmatrix
