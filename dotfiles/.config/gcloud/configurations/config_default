@@ -1,4 +1,8 @@
 [core]
-account = olaf.bochmann@gmail.com
-project = complexlab-org
+account = olaf.bochman@fetch.ai
+project = fetch-ai-sandbox
+
+[compute]
+zone = europe-west2-b
+region = europe-west2
 
