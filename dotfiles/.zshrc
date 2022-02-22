@@ -515,15 +515,17 @@ PERL_LOCAL_LIB_ROOT="/Users/bochmann/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_L
 PERL_MB_OPT="--install_base \"/Users/bochmann/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/bochmann/perl5"; export PERL_MM_OPT;
 
-###############################################################################
-# Pyenv
-###############################################################################
+## The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+ ##############################################################################
+ # Pyenv
+ ###############################################################################
+
+ eval "$(pyenv init -)"
+ eval "$(pyenv virtualenv-init -)"
 
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
-
 
