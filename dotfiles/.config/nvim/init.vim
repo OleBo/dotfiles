@@ -52,7 +52,7 @@ set completeopt=noinsert,menuone,noselect        " see :help Ncm2PopupOpen
 call dein#add('fisadev/vim-isort') " python sort import [dep] pip install isort
 " :Isort
 
-call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['md','markdown', 'pandoc.markdown', 'rmd'], 'build': 'sh -c ' })
+call dein#add('iamcco/markdown-preview.nvim', {'on_ft': ['markdown', 'pandoc.markdown', 'rmd'], 'build': 'sh -c "cd app && yarn install"' })
 let g:mkdp_auto_start = 1 " call :MarkdownPreview
 let g:mkdp_auto_close = 1
 let g:mkdp_refresh_slow = 0
@@ -80,7 +80,65 @@ call dein#add('hunner/vim-plist', {'on_ft': 'plist'})
 call dein#add('w0rp/ale') " using flake8
 " management of tags files
 " - It will (re)generate tag files as you work while staying out of your way.
-"call dein#add('ludovicchabant/vim-gutentags')
+call dein#add('ludovicchabant/vim-gutentags')
+let g:gutentags_add_default_project_roots = 0
+let g:gutentags_project_root = ['package.json', '.git']
+let g:gutentags_cache_dir = expand('~/.cache/vim/ctags/')
+let g:gutentags_generate_on_new = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_empty_buffer = 0
+let g:gutentags_ctags_extra_args = [
+            \ '--tag-relative=yes',
+            \ '--fields=+ailmnS',
+            \ ]
+let g:gutentags_ctags_exclude = [
+            \ '*.git', '*.svg', '*.hg',
+            \ '*/tests/*',
+            \ 'build',
+            \ 'dist',
+            \ '*sites/*/files/*',
+            \ 'bin',
+            \ 'node_modules',
+            \ 'bower_components',
+            \ 'cache',
+            \ 'compiled',
+            \ 'docs',
+            \ 'example',
+            \ 'bundle',
+            \ 'vendor',
+            \ '*.md',
+            \ '*-lock.json',
+            \ '*.lock',
+            \ '*bundle*.js',
+            \ '*build*.js',
+            \ '.*rc*',
+            \ '*.json',
+            \ '*.min.*',
+            \ '*.map',
+            \ '*.bak',
+            \ '*.zip',
+            \ '*.pyc',
+            \ '*.class',
+            \ '*.sln',
+            \ '*.Master',
+            \ '*.csproj',
+            \ '*.tmp',
+            \ '*.csproj.user',
+            \ '*.cache',
+            \ '*.pdb',
+            \ 'tags*',
+            \ 'cscope.*',
+            \ '*.css',
+            \ '*.less',
+            \ '*.scss',
+            \ '*.exe', '*.dll',
+            \ '*.mp3', '*.ogg', '*.flac',
+            \ '*.swp', '*.swo',
+            \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+            \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+            \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+            \ ]
 " Edition
 call dein#add('Chiel92/vim-autoformat')
 call dein#add('Shougo/deoplete.nvim') " autocomplete framework

@@ -14,3 +14,4 @@ Session.vim
 
 # VIM: netrw.vim: Network oriented reading, writing, browsing (eg: ftp scp)
 .netrwhist
+.DS_Store
