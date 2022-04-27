@@ -518,12 +518,20 @@ PERL_MM_OPT="INSTALL_BASE=/Users/bochmann/perl5"; export PERL_MM_OPT;
 ## The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
- ##############################################################################
- # Pyenv
- ###############################################################################
 
- eval "$(pyenv init -)"
- eval "$(pyenv virtualenv-init -)"
+##############################################################################
+# Ruby
+###############################################################################
+source /usr/local/opt/chruby/share/chruby/chruby.sh
+source /usr/local/opt/chruby/share/chruby/auto.sh
+export PATH="/Users/bochmann/.rubies/ruby-3.1.2/bin:$PATH"
+
+##############################################################################
+# Pyenv
+###############################################################################
+
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"

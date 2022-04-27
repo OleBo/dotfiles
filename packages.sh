@@ -43,6 +43,8 @@ python@3.8
 qt
 rclone
 ruby
+chruby
+ruby-install
 subversion
 testdisk
 tldr
