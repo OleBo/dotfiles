@@ -390,20 +390,6 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Enable “natural” (Lion-style) scrolling
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
 
-# Increase sound quality for Bluetooth headphones/headsets.
-# Sources:
-#     https://www.reddit.com/r/apple/comments/5rfdj6/pro_tip_significantly_improve_bluetooth_audio/
-#     https://apple.stackexchange.com/questions/40259/bluetooth-audio-problems-on-a-macbook
-for bitpool_param in "Negotiated Bitpool" \
-                     "Negotiated Bitpool Max" \
-                     "Negotiated Bitpool Min" \
-                     "Apple Bitpool Max (editable)" \
-                     "Apple Bitpool Min (editable)" \
-                     "Apple Initial Bitpool (editable)" \
-                     "Apple Initial Bitpool Min (editable)"; do
-    defaults write com.apple.BluetoothAudioAgent "${bitpool_param}" -int 80
-done
-
 # Enable full keyboard access for all controls
 # (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
