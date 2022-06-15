@@ -518,6 +518,9 @@ PERL_MM_OPT="INSTALL_BASE=/Users/bochmann/perl5"; export PERL_MM_OPT;
 ## The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/bochmann/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
+## To have kubectl use the new binary plugin for authentication instead of 
+## using the default provider-specific code 
+USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 ##############################################################################
 # Ruby
