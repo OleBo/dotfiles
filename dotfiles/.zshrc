@@ -1,19 +1,12 @@
+# Restart Zsh with exec zsh
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+# Source: https://github.com/romkatv/powerlevel10k#how-do-i-enable-instant-prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-###############################################################################
-# Neovim
-###############################################################################
-# Make Neovim the default editor
-export EDITOR="nvim"
-
-alias vim='nvim'
-alias vi='nvim'
-alias v="nvim"
 
 ###############################################################################
 # Expends global searched path to look for brew-sourced utilities.
@@ -37,6 +30,11 @@ if [[ ! -e ${PATH_CACHE} || -n ${PATH_CACHE}(#qN.md+7) ]]; then
         $(brew --prefix openssh)/bin
         $(brew --prefix curl)/bin
         $(brew --prefix python)/libexec/bin
+        $(brew --prefix python)/bin
+        ${HOME}/.cargo/bin
+        # Required by pipx.
+        ${HOME}/.local/bin
+		/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
     )
     print -rl -- ${PATH_LIST} > ${PATH_CACHE}
 fi
@@ -55,8 +53,7 @@ for line in "${(@f)"$(<${PATH_CACHE})"}"
 ###############################################################################
 # Source: https://thorsten-hans.com/5-types-of-zsh-aliases#suffix-aliases
 
-alias -s {py,rst,toml,json}=nvim
-alias -s {md,markdown}=MacDown
+alias -s {md,markdown,rst,toml,json,py}=code
 alias -s {ape,avi,flv,m4a,mkv,mov,mp3,mp4,mpeg,mpg,ogg,ogm,wav,webm}=iina
 
 # Paste a repository URL in terminal, and have it cloned.
@@ -108,17 +105,6 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
-
-# Use vi mode
-bindkey -v
-
-# Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
-export KEYTIMEOUT=1
-
-# Enable Ctrl-v to edit command line
-autoload -U edit-command-line
-zle -N edit-command-line
-bindkey '^v' edit-command-line
 
 ###############################################################################
 # Zsh Options
@@ -187,6 +173,17 @@ unsetopt sh_word_split
 unsetopt beep
 
 ###############################################################################
+# Zsh Packages
+###############################################################################
+
+# Invoke first to let it color GCC, Less, Grep, ag and fast-syntax-highlighting.
+#zinit pack for dircolors-material
+
+# Ovverrides the LS_COLORS environment variable set above with more up to date and finer details.
+#zinit pack for ls_colors
+
+
+###############################################################################
 # Zsh Plugins
 ###############################################################################
 zinit light zsh-users/zsh-completions
@@ -221,11 +218,28 @@ zinit light darvid/zsh-poetry
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+
 ###############################################################################
 # Prompt
 ###############################################################################
 # Set user & root prompt
 export SUDO_PS1='\[\e[31m\]\u\[\e[37m\]:\[\e[33m\]\w\[\e[31m\]\$\[\033[00m\] '
+
+# Do not let homebrew send stats to Google Analytics.
+# See: https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Analytics.md#opting-out
+export HOMEBREW_NO_ANALYTICS=1
+
+
+###############################################################################
+# Neovim
+###############################################################################
+# Make Neovim the default editor
+export EDITOR="nvim"
+
+alias vim='nvim'
+alias vi='nvim'
+alias v="nvim"
+
 
 ###############################################################################
 # Coloured output, aliases and good defaults.
@@ -237,11 +251,11 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias diff="colordiff -ru"
-#alias dmesg="dmesg --color"
-#alias ccat='pygmentize -g'
+alias dmesg="dmesg --color"
+alias ccat='pygmentize -g'
 
 alias top="htop"
-#alias gr='grep -RIi --no-messages'
+alias gr='grep -RIi --no-messages'
 #alias rg='rg -uuu'
 alias g="git"
 alias h="history"
@@ -287,7 +301,7 @@ fi
 # exa is a modern ls.
 export TIME_STYLE="long-iso"
 LS_FLAGS="--all --group-directories-first --sort=name"
-alias ls="exa ${LS_FLAGS} --across"
+#alias ls="exa ${LS_FLAGS} --across"
 alias ll="exa ${LS_FLAGS} --long --group --header --binary --created --modified --git --classify"
 alias l="ls"
 alias tree="ll --tree"
@@ -300,20 +314,6 @@ alias .....="cd ../../../.."
 
 export LESS="-eRX"
 export LESSOPEN='| pygmentize -g %s'
-# Tip from http://sourceforge.net/apps/trac/qlc/wiki/InstallationSubversionLinux#Optionalhelpers
-export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
-export LESS_TERMCAP_md=$(tput bold; tput setaf 6) # cyan
-export LESS_TERMCAP_me=$(tput sgr0)
-export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4) # yellow on blue
-export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
-export LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 7) # white
-export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
-export LESS_TERMCAP_mr=$(tput rev)
-export LESS_TERMCAP_mh=$(tput dim)
-export LESS_TERMCAP_ZN=$(tput ssubm)
-export LESS_TERMCAP_ZV=$(tput rsubm)
-export LESS_TERMCAP_ZO=$(tput ssupm)
-export LESS_TERMCAP_ZW=$(tput rsupm)
 
 # Remove spurious find error messages on access restrictions. Keeps find's
 # output clean, tidy and easier to read.
@@ -357,16 +357,11 @@ alias f='open -a Finder ./'
 # Replace netstat command on macOS to find ports used by apps
 alias netstat="sudo lsof -i -P"
 
-# Alt-b and Alt-f jump to each word separated by a '/', rather than over an entire /path/location.
-# make WORDCHARS local to the definition backword-word,
-# so that kill-word (Alt-Backspace, Ctrl-w) still deletes an entire path.
-tcsh-backward-delete-word () {
-local WORDCHARS="${WORDCHARS:s#/#}"
-zle backward-delete-word
-}
-zle -N tcsh-backward-delete-word           # add it as a keymap
-bindkey "^[^?" tcsh-backward-delete-word   # bind to Alt-Backspace
-bindkey '^W' tcsh-backward-delete-word     # bind to Ctrl-w
+# Lock the screen
+alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
+
+# Deactivate git-delta diff pager.
+export BAT_PAGER=cat
 
 ###############################################################################
 # Python
@@ -378,8 +373,12 @@ export PYTHONDONTWRITEBYTECODE=true
 # Python shell auto-completion and history.
 export PYTHONSTARTUP="$HOME/.python_startup.py"
 
-# Display DeprecationWarning
-#export PYTHONWARNINGS=d
+# Use pdbr for
+export PYTHONBREAKPOINT="pdbr.set_trace"
+
+# Created by `pipx` on 2023-10-21 16:56:58
+export PATH="$PATH:/Users/bochmann/.local/bin"
+
 
 ###############################################################################
 # ruby
@@ -539,9 +538,15 @@ export PATH=:"/usr/local/lib/ruby/gems/3.1.0/bin$PATH"
 ###############################################################################
 
 eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 # Load pyenv automatically (there should be no PATH mods after that)
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 
+# To enable auto-activation
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+
+# remove prompt changing 
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+	
+### End of Zinit's installer chunk

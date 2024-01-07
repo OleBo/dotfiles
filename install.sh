@@ -1,49 +1,106 @@
 #!/usr/bin/env zsh
-# Print commands and their arguments as they are executed. (turn off: set +x)
-set -x
+# Installs dotfiles on a mac
+# Name: install.sh
 
+######### Debugging #########
+# - set -x: trace commands and their arguments as they are executed. (turn off: set +x)
+# - set -e: Exit immediately if a command exits with a non-zero status.
+#set -xe
+set -Eeuxo pipefail
+# create a handler using trap to insert DEBUG signal. 
+#trap 'printf "$LINENO :-> "; read line ; eval $line' DEBUG
+
+######### Pre-checks #########
 # Detect platform.
 if [ "$(uname -s)" != "Darwin" ]; then
 	echo "These dotfiles only targets macOS."
 	exit 1
 fi
 
-# Ask for the administrator password upfront.
-sudo -v
-
-# Keep-alive: update existing `sudo` time stamp until script has finished.
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-# Check if System Integrity Protection (SIP) is Enabled on Mac
-# SIP locks down certain Mac OS system folders to prevent modification, 
-# execution, and deletion of critical system-level files on the Mac, 
-# even with a root user account.
-csrutil status | grep --quiet "disabled"
-if [[ $? -ne 0 ]]; then
-	echo "System Integrity Protection (SIP) is enabled."
-else
-	echo "System Integrity Protection (SIP) is disabled."
+# Check current shell interpreter.
+ps -p $$ | grep "zsh"
+if [ $? != 0 ]; then
+    echo "These dotfiles were tested with Zsh shell only."
+    exit 1
 fi
 
-######### Dotfiles install #########
+# Check if SIP is going to let us mess with some part of the system.
+SIP_DISABLED=$(csrutil status | grep --quiet "enabled"; echo $?)
+if [[ ${SIP_DISABLED} -ne 0 ]]; then
+    echo "System Integrity Protection (SIP) is disabled."
+else
+    echo "System Integrity Protection (SIP) is enabled."
+fi
 
-DOT_FILES=("${(@f)$(find ./dotfiles -maxdepth 1 -not -path './dotfiles' -not -name '\.DS_Store')}")
-for FILEPATH in $DOT_FILES
-do
-	SOURCE="${PWD}/$FILEPATH"
-	TARGET="${HOME}/$(basename "${FILEPATH}")"
-    # Link files
-	if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
-		mv "$TARGET" "$TARGET.dotfiles.bak"
-		echo "$TARGET already exists. I replaced it and moved it to $TARGET.dotfiles.bak"
-	fi
-	ln -sf "${SOURCE}" "$(dirname "${TARGET}")"
+######### Sudo keep-alive #########
+# Ask for the administrator password upfront.
+# Ignore the following error returns within GitHub actions workflows:
+#   sudo: a terminal is required to read the password; either use the -S option to
+#   read from standard input or configure an askpass helper
+sudo --validate || true
+
+# Update existing `sudo` time stamp until script has finished.
+while true; do sleep 60; sudo --non-interactive true; kill -0 "$$" || exit; done 2> /dev/null &
+
+######### Basic dependencies #########
+
+# Command line tools provides a copy of git.
+xcode-select --install || true
+
+######### Symlink dotfiles in user's home #########
+
+# Use system, BSD find command.
+FIND_CLI="/usr/bin/find"
+
+# Collect all entries within the "dotfiles" sub-folder, but the "Library" and ".config".
+DOT_FILES=$($FIND_CLI dotfiles -depth 1 -not -name '\.DS_Store' -not -name 'Library' -not -name '.config')
+# Collect all ".config" content .
+DOT_FILES+="
+$($FIND_CLI dotfiles/.config -depth 1 -not -name '\.DS_Store')"
+# Collect all "Library" subfolders but "Application Support" folder.
+DOT_FILES+="
+$($FIND_CLI dotfiles/Library -depth 1 -not -name '\.DS_Store' -not -name 'Application Support')"
+# Collect all "Application Support" subfolders but "Code" folder.
+DOT_FILES+="
+$($FIND_CLI 'dotfiles/Library/Application Support' -depth 1 -not -name '\.DS_Store' -not -name 'Code')"
+# Manually add Code settings file.
+DOT_FILES+="
+dotfiles/Library/Application Support/Code/User/settings.json"
+
+echo "Collected dotfiles:"
+echo "${DOT_FILES}" | sort
+
+echo "Backup and install dotfiles:"
+for FILEPATH (${(f)DOT_FILES}); do
+    DESTINATION="${PWD}/${FILEPATH}"
+    LINK="${HOME}/${FILEPATH#*/}"
+    CURRENT_LINK="$(readlink "${LINK}" || true)"
+    if [[ "${CURRENT_LINK}" != "${DESTINATION}" ]]; then
+        # Something (a link, a file, a directory...) already exists. Back it up.
+        if [[ -e "${LINK}" ]]; then
+            EXT=".dotfiles.bak"
+            INC=0
+            BACKUP="${LINK}${EXT}${INC}"
+            while [ -f "${BACKUP}" ]; do
+                ((INC++))
+                BACKUP="${LINK}${EXT}${INC}"
+            done
+            echo "Backup: ${LINK} -> ${BACKUP}"
+            mv "${LINK}" "${BACKUP}"
+        fi
+        echo "Create link: ${LINK} -> ${DESTINATION}"
+        # Create missing directory structure if missing.
+        LINK_FOLDER="$(dirname "${LINK}")"
+        mkdir -p "${LINK_FOLDER}"
+        # Force symbolic link (re-)creation. It either doesn't exist or point to the wrong place.
+        ln -sf "${DESTINATION}" "${LINK_FOLDER}"
+    fi
 done
 
 ######### System upgrades #########
 
 # Update all macOS packages.
-sudo softwareupdate -i -a
+sudo softwareupdate --install --all
 
 ######### Brew install #########
 
@@ -52,153 +109,194 @@ sudo softwareupdate -i -a
 if test ! "$(command -v brew)"
 then
     # Install Homebrew without prompting for user confirmation.
-    # See: https://discourse.brew.sh/t/silent-automated-homebrew-install/3180
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 brew analytics off
+
+# Refresh our local copy of package index.
 brew update
+
+# Fetch latest packages.
 brew upgrade
 
+# Add services.
+brew tap homebrew/services
+brew tap gromgit/homebrew-fuse
+
 # Add Cask https://github.com/Homebrew/homebrew-cask/blob/master/USAGE.md
-brew tap homebrew/cask
+#brew tap homebrew/cask
 
 # Add drivers https://github.com/Homebrew/homebrew-cask-drivers
-brew tap homebrew/cask-drivers
+#brew tap homebrew/cask-drivers
 
 # Add services https://github.com/Homebrew/homebrew-services
-brew tap homebrew/services
+#brew tap homebrew/services
 
 # Add fonts https://github.com/Homebrew/homebrew-cask-fonts
-brew tap homebrew/cask-fonts
+#brew tap homebrew/cask-fonts
 
 # Install XQuartz beforehand to support Linux-based GUI Apps.
-brew cask install xquartz
+#brew cask install xquartz
 
 # Load package lists to install.
-source ./packages.sh
+#source ./packages.sh
 
 # Install brew packages.
-for PACKAGE in $BREW_PACKAGES
-do
-	echo "Installing brew package $PACKAGE"
-	brew install "$PACKAGE"
-done
+#for PACKAGE in $BREW_PACKAGES
+#do
+#	echo "Installing brew package $PACKAGE"
+#	brew install "$PACKAGE"
+#done
 
 # Install cask packages.
-for PACKAGE in $CASK_PACKAGES
-do
-	echo "Installing cask package $PACKAGE"
-	brew install --cask "$PACKAGE"
-done
+#for PACKAGE in $CASK_PACKAGES
+#do
+#	echo "Installing cask package $PACKAGE"
+#	brew install --cask "$PACKAGE"
+#done
 
-# htop-osx requires root privileges to correctly display all running processes.
-sudo chown root:wheel "$(brew --prefix)/bin/htop"
-sudo chmod u+s "$(brew --prefix)/bin/htop"
+######### Meta Package Manager #########
 
-######### Mac App Store packages #########
+brew install "python@3.11"
+brew install pipx
+pipx ensurepath
 
-# Install Mac App Store CLI and upgrade all apps.
-brew install mas
-mas upgrade
+# Install mpm.
+brew install meta-package-manager
 
-# Remove Applications
-sudo rm -rf /Applications/GarageBand.app
-sudo rm -rf /Applications/iMovie.app
+# Refresh all package managers.
+mpm --verbosity INFO sync
 
-# Install Applications
-mas lucky "Keynote"
-mas lucky "Numbers"
-mas lucky "Pages"
-mas lucky "Final Cut Pro"
-mas lucky "Logic Pro"
-mas lucky "MainStage"
-mas lucky "Xcode"
-mas lucky "Swiftify for Xcode"
-mas lucky "Developer"
-mas lucky "System Designer"
-mas lucky "LanguageTranslator"
-mas lucky "Transporter"
-mas lucky "Motion"
-mas lucky "Jami"
-mas lucky "Text Toolset"
-mas lucky "Compressor"
-mas lucky "Whiteboard"
+# Install all my packages but skip [mas] section (there is a circular
+# dependency as mas needs to be install by brew first).
+# XXX This edge-case should be taken care of upstream by mpm.
+mpm --verbosity INFO --exclude mas restore ./packages.toml
 
-# Open apps so I'll not forget to login
-open -a Dropbox
+######### Zsh #########
 
-# Install QuickLooks plugins
-# Source: https://github.com/sindresorhus/quick-look-plugins
-brew cask install epubquicklook
-brew cask install qlcolorcode
-brew cask install qlimagesize
-brew cask install qlmarkdown
-brew cask install qlstephen
-brew cask install qlvideo
-brew cask install quicklook-json
-brew cask install suspicious-package
-qlmanage -r
-
-# Clean things up.
-brew cleanup
-brew services cleanup
-
-# Use latest pip.
-python -m pip install --upgrade pip
-
-# Install & upgrade all global python modules
-for p in $PYTHON_PACKAGES
-do
-	echo "Installing python package $p"
-	python -m pip install --upgrade "$p"
-done
-
-# create pyenv virtualenvironments for neovim 
-# https://github.com/pyenv/pyenv/issues/1643
-PYTHON_CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" \
-CFLAGS="-I$(brew --prefix zlib)/include -I$(brew --prefix sqlite)/include -I$(brew --prefix bzip2)/include" \
-LDFLAGS="-L$(brew --prefix zlib)/lib -L$(brew --prefix sqlite)/lib -L$(brew --prefix bzip2)/lib" \
-pyenv install --patch 3.8.3 <<(curl -sSL https://github.com/python/cpython/commit/8ea6353.patch\?full_index\=1)
-
-pyenv virtualenv 3.8.3 neovim3
-
-pyenv install 2.7.15
-pyenv virtualenv 2.7.15 neovim
-
-# neovim node.js provider
-sudo npm install -g neovim
-#yarn global add neovim #if you use yarn
-
-# neovim Ruby provider
-sudo gem install neovim  # to ensure the neovim RubyGem is installed
-gem environment     # to ensure the gem bin directory is in the PATH
-
-# Generate pip and poetry completion.
-# TODO https://github.com/pypa/pipenv/issues/442
-python -m pip completion --zsh > ~/.zfunc/_pip
-poetry completions zsh > ~/.zfunc/_poetry
-_MPM_COMPLETE=source_zsh mpm > ~/.zfunc/_mpm
-
-# Force Neovim plugin upgrades
-nvim -c "try | call dein#update() | finally | qall! | endtry"
-
-# Install zinit https://github.com/zdharma/zinit#zinit
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
+# Install zinit
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
 
 # Fix "zsh compinit: insecure directories" error.
 sudo chown -R $(whoami) /usr/local/share/zsh /usr/local/share/zsh/site-functions
 chmod u+w /usr/local/share/zsh /usr/local/share/zsh/site-functions
 
+# Generate pip and poetry completion.
+python -m pip completion --zsh > ~/.zfunc/_pip
+poetry completions zsh > ~/.zfunc/_poetry
+_MPM_COMPLETE=zsh_source mpm > ~/.zfunc/_mpm
+
+# Restart the shell.
+exec zsh
+
 # Force zinit self-upgrade.
 zinit self-update
+zinit delete --clean --yes
 zinit update
 
-# install powerline fonts 
-git clone https://github.com/powerline/fonts.git --depth=1
-cd fonts/ 
-./install.sh 
-rm -rf fonts
+######### Post-brew setup #########
 
-# Configure everything.
+# Let the system Java wrappers find this JDK.
+sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+
+# htop-osx requires root privileges to correctly display all running processes.
+sudo chown root:wheel "$(brew --prefix)/bin/htop"
+sudo chmod u+s "$(brew --prefix)/bin/htop"
+
+# Activate and register MAC Address spoofing service if not already running.
+if [[ ! -n $(sudo brew services info spoof-mac --json | jq '.[] | select(.name == "spoof-mac" and .loaded == true)') ]]; then
+    sudo brew services restart spoof-mac
+fi
+
+######### Mac App Store packages #########
+
+# Upgrade all desktop apps.
+mpm --verbosity INFO --include mas restore ./packages.toml
+
+# Remove unused apps.
+mas uninstall 682658836 || true  # GarageBand
+
+# Open apps so I'll not forget to login
+APP_NAMES="
+Dropbox
+"
+for APP_NAME (${(f)APP_NAMES})
+do
+    # Do not fail on missing app
+    open -a "${APP_NAME}" || true
+done
+
+# Activate Safari extension.
+# Source: https://github.com/kdeldycke/kevin-deldycke-blog/blob/main/content/posts/macos-commands.md
+pluginkit -e use -i com.bitwarden.desktop.safari
+
+# Fix "QL*.qlgenerator cannot be opened because the developer cannot be verified."
+xattr -cr ~/Library/QuickLook/QLColorCode.qlgenerator
+xattr -cr ~/Library/QuickLook/QLStephen.qlgenerator
+# Clear plugin cache
+qlmanage -r
+qlmanage -r cache
+
+# Configure xbar.
+XBAR_PLUGINS_FOLDER="${HOME}/Library/Application Support/xbar/plugins"
+mkdir -p "${XBAR_PLUGINS_FOLDER}"
+wget -O "${XBAR_PLUGINS_FOLDER}/btc.17m.sh" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Cryptocurrency/Bitcoin/bitstamp.net/last.10s.sh
+sed -i "s/Bitstamp: /Ƀ/" "${XBAR_PLUGINS_FOLDER}/btc.17m.sh"
+wget -O "${XBAR_PLUGINS_FOLDER}/brew-services.7m.rb" https://raw.githubusercontent.com/matryer/xbar-plugins/main/Dev/Homebrew/brew-services.10m.rb
+ln -sf "$(mpm --bar-plugin-path)" "${XBAR_PLUGINS_FOLDER}/mpm.7h.py"
+chmod +x "${XBAR_PLUGINS_FOLDER}/"*.(sh|py|rb)
+open -a xbar
+
+# Open Tor Browser at least once in the background to create a default profile.
+# Then close it after a while to not block script execution.
+open --wait-apps -g -a "Tor Browser" & sleep 20s; killall "firefox"
+# Show TorBrowser bookmark toolbar.
+TB_CONFIG_DIR=$($FIND_CLI "${HOME}/Library/Application Support/TorBrowser-Data/Browser" -maxdepth 1 -iname "*.default")
+tee -a "$TB_CONFIG_DIR/xulstore.json" <<-EOF
+{"chrome://browser/content/browser.xhtml": {
+    "PersonalToolbar": {"collapsed": "false"}
+}}
+EOF
+# Set TorBrowser bookmarks in toolbar.
+# Source: https://yro.slashdot.org/story/16/06/08/151245/kickasstorrents-enters-the-dark-web-adds-official-tor-address
+BOOKMARKS="
+https://protonmailrmez3lotccipshtkleegetolb73fuirgj7r4o4vfu7ozyd.onion,ProtonMail,ehmwyurmkort,eqeiuuEyivna
+http://piratebayo3klnzokct3wt5yyxb2vpebbuyjl7m623iaxmqhsd52coid.onion,PirateBay,nnypemktnpya,dvzeeooowsgx
+"
+TB_BOOKMARK_DB="$TB_CONFIG_DIR/places.sqlite"
+# Remove all bookmarks from the toolbar.
+sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "DELETE FROM moz_bookmarks WHERE parent=(SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'); SELECT * FROM moz_bookmarks;"
+# Add bookmarks one by one.
+for BM_INFO (${(f)BOOKMARKS})
+do
+    BM_URL=$(echo $BM_INFO | cut -d',' -f1)
+    BM_TITLE=$(echo $BM_INFO | cut -d',' -f2)
+    BM_GUID1=$(echo $BM_INFO | cut -d',' -f3)
+    BM_GUID2=$(echo $BM_INFO | cut -d',' -f4)
+    sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "INSERT OR REPLACE INTO moz_places(url, hidden, guid, foreign_count) VALUES('$BM_URL', 0, '$BM_GUID1', 1); INSERT OR REPLACE INTO moz_bookmarks(type, fk, parent, title, guid) VALUES(1, (SELECT id FROM moz_places WHERE guid='$BM_GUID1'), (SELECT id FROM moz_bookmarks WHERE guid='toolbar_____'), '$BM_TITLE', '$BM_GUID2');"
+done
+sqlite3 -echo -header -column "$TB_BOOKMARK_DB" "SELECT * FROM moz_bookmarks; SELECT * FROM moz_places;"
+
+# Open IINA at least once in the background to let it register its Safari extension.
+# Then close it after a while to not block script execution.
+# This also pop-up a persistent, but non-blocking dialog:
+# "XXX.app is an app downloaded from the Internet. Are you sure you want to open it?"
+open --wait-apps -g -a "IINA" & sleep 20s; killall "IINA"
+
+# Force Neovim plugin upgrades
+nvim -c "try | call dein#update() | finally | qall! | endtry"
+
+######### Cleanup #########
+
+mpm --verbosity INFO cleanup
+brew services cleanup
+
+######### Update package versions #########
+
+mpm --verbosity INFO snapshot --update-version ./packages.toml
+
+######### Configuration #########
+
+export SIP_DISABLED
 #source ./macos-config.sh
-
+unset SIP_DISABLED

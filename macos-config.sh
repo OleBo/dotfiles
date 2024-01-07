@@ -1,4 +1,6 @@
 #!/usr/bin/env zsh
+set -Eeuxo pipefail
+
 ###############################################################################
 # Plist and preferences                                                       #
 ###############################################################################
@@ -19,8 +21,6 @@
 #   * https://scriptingosx.com/2018/02/defaults-the-plist-killer/
 #   * https://apps.tempel.org/PrefsEditor/index.php
 
-set -x
-
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -32,29 +32,63 @@ HOST_UUID=$(ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{pri
 ###############################################################################
 # Permissions and Access                                                      #
 ###############################################################################
+# CLI to open the automation preference panel:
+#   ❯ open "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"
+#
+# Raw list of permission names:
+#   ❯ strings /System/Library/PrivateFrameworks/TCC.framework/Versions/Current/Resources/tccd | grep "^kTCCService[A-Z a-z]" | sort | uniq
 
 # Ask for the administrator password upfront
 sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# tccutil commands below only works if SIP is disabled.
+if (( ${+SIP_DISABLED} )); then
+    echo "System Integrity Protection (SIP) is disabled."
 
-# Some plist preferences files are not readable either by the user or root
-# unless the Terminal.app gets Full Disk Access permission.
-#
-# ❯ cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
-# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
-#
-# ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
-# Password:
-# cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
-# TODO: Add Full Disk Access to Terminal.app
+    # List existing entries for debug.
+    sudo tccutil --list
 
-# Add Terminal as a developer tool.
-# Source: an Apple Xcode engineer at: https://news.ycombinator.com/item?id=23278629
-sudo spctl developer-mode enable-terminal
-# TODO: go to Security & Privacy preference pane, login and check Terminal app.
+    # Add Terminal as a developer tool. Any app referenced in the hidden Developer
+    # Tools category will be able to bypass GateKeeper.
+    # Source: an Apple Xcode engineer at:
+    #   https://news.ycombinator.com/item?id=23278629
+    #   https://news.ycombinator.com/item?id=23273867
+    sudo spctl developer-mode enable-terminal
+    sudo tccutil --service "kTCCServiceDeveloperTool" --insert "com.apple.Terminal"
+    sudo tccutil --service "kTCCServiceDeveloperTool" --enable "com.apple.Terminal"
 
+    # Since 10.15, BSD-userland processes now also deal with sandboxing, since the
+    # BSD syscall ABI is now reimplemented in terms of macOS security capabilities.
+    # Source: https://news.ycombinator.com/item?id=23274213
+    #
+    # Also, some plist preferences files are not readable either by the user or root
+    # unless the Terminal.app gets Full Disk Access permission.
+    #
+    #   ❯ cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+    #   cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+    #
+    #   ❯ sudo cat /Users/kde/Library/Preferences/com.apple.AddressBook.plist
+    #   Password:
+    #   cat: /Users/kde/Library/Preferences/com.apple.AddressBook.plist: Operation not permitted
+
+    # Grant Full Disk Access permission
+    for app (
+        "com.apple.Terminal"
+    ); do
+        sudo tccutil --service "kTCCServiceSystemPolicyAllFiles" --insert "${app}"
+        sudo tccutil --service "kTCCServiceSystemPolicyAllFiles" --enable "${app}"
+    done
+
+    # Grant Accessibility permission
+    for app (
+        "/Applications/Amethyst.app"
+        "/Applications/MonitorControl.app"
+    ); do
+        sudo tccutil --insert "${app}"
+        sudo tccutil --enable "${app}"
+    done
+
+fi
 
 ###############################################################################
 # General UI/UX                                                               #
@@ -1308,12 +1342,16 @@ defaults write org.n8gray.QLColorCode extraHLFlags '-l -V'
 # Terminal                                                                    #
 ###############################################################################
 
+# Set Zsh as default shell
+sudo chsh -s /bin/zsh $USERNAME
+sudo chsh -s /bin/zsh root
+
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array "4"
 
-# Use specific color shcene and settings in Terminal.app
-osascript <<EOD
-
+# Use specific color scheme and settings in Terminal.app
+(
+osascript <<EOF
 tell application "Terminal"
 
     local allOpenedWindows
@@ -1355,8 +1393,8 @@ tell application "Terminal"
     end repeat
 
 end tell
-
-EOD
+EOF
+) || true
 
 # Enable “focus follows mouse” for Terminal.app and all X11 apps
 # i.e. hover over a window and start typing in it without clicking first
@@ -1372,10 +1410,12 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 defaults write com.apple.Terminal ShowLineMarks -int 0
 
 # Audible and Visual Bells
-/usr/libexec/PlistBuddy                                     \
-    -c "Delete :WindowSettings:Basic:Bell"                  \
+/usr/libexec/PlistBuddy \
+    -c "Delete :WindowSettings:Basic:Bell"       \
+    -c "Delete :WindowSettings:Basic:VisualBell" \
+    ~/Library/Preferences/com.apple.terminal.plist || true
+/usr/libexec/PlistBuddy \
     -c "Add    :WindowSettings:Basic:Bell       bool false" \
-    -c "Delete :WindowSettings:Basic:VisualBell"            \
     -c "Add    :WindowSettings:Basic:VisualBell bool true"  \
     ~/Library/Preferences/com.apple.terminal.plist
 
@@ -1387,14 +1427,14 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
 # Source: https://krypted.com/mac-os-x/ins-outs-using-tmutil-backup-restore-review-time-machine-backups/
 
 # Prevent Time Machine from prompting to use new hard drives as backup volume
-#defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Limit Time Machine total backup size to 1 TB (=1024*1024)
 # Source: http://www.defaults-write.com/time-machine-setup-a-size-limit-for-backup-volumes/
-#sudo defaults write com.apple.TimeMachine MaxSize -integer 1048576
+sudo defaults write com.apple.TimeMachine MaxSize -integer 1048576
 
 # Activate Time Machine backups (including local snapshots).
-#sudo tmutil enable
+sudo tmutil enable
 
 ###############################################################################
 # Activity Monitor                                                            #
@@ -1657,10 +1697,12 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 # iiNA                                                                        #
 ###############################################################################
 
+# XXX PlistBuddy seems to overflow with too much commands. Split in two to manage it.
 /usr/libexec/PlistBuddy \
     -c "Clear dict" \
     -c "Add :SUAutomaticallyUpdate          integer 1" \
     -c "Add :SUEnableAutomaticChecks        integer 1" \
+    -c "Add :SUScheduledCheckInterval       integer 604800" \
     -c "Add :receiveBetaUpdate              integer 0" \
     -c "Add :SUHasLaunchedBefore            integer 1" \
     -c "Add :SUSendProfileInfo              integer 0" \
@@ -1669,6 +1711,9 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
     -c "Add :quitWhenNoOpenedWindow         integer 1" \
     -c "Add :keepOpenOnFileEnd              integer 0" \
     -c "Add :resumeLastPosition             integer 0" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
+/usr/libexec/PlistBuddy \
     -c "Add :recordRecentFiles              integer 0" \
     -c "Add :recordPlaybackHistory          integer 0" \
     -c "Add :trackAllFilesInRecentOpenMenu  integer 0" \
@@ -1677,6 +1722,9 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
     -c "Add :screenShotFolder               string  '~/Desktop'" \
     -c "Add :themeMaterial                  integer 4" \
     -c "Add :resizeWindowTiming             integer 0" \
+    ~/Library/Preferences/com.colliderli.iina.plist
+
+/usr/libexec/PlistBuddy \
     -c "Add :controlBarToolbarButtons       array" \
     -c "Add :controlBarToolbarButtons:0     integer 2" \
     -c "Add :controlBarToolbarButtons:0     integer 1" \
@@ -1684,8 +1732,14 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
     -c "Add :controlBarToolbarButtons:0     integer 0" \
     -c "Add :showChapterPos                 integer 1" \
     -c "Add :autoSearchOnlineSub            integer 1" \
+    -c "Add :ytdlSearchPath                 string  ''" \
     ~/Library/Preferences/com.colliderli.iina.plist
 
+# Link legacy youtube-dl binary to maintained yt-dlp. Sources:
+# https://github.com/iina/iina/issues/3327#issuecomment-998184733
+# https://github.com/iina/iina/issues/3502
+sudo rm /Applications/IINA.app/Contents/MacOS/youtube-dl
+sudo ln -fs $(command -v yt-dlp) /Applications/IINA.app/Contents/MacOS/youtube-dl
 
 ###############################################################################
 # Fork                                                                        #
@@ -1697,7 +1751,7 @@ defaults write com.DanPristupov.Fork applicationUpdateChannel -int 1
 defaults write com.DanPristupov.Fork SUScheduledCheckInterval -int 604800
 
 # Default repository source.
-defaults write com.DanPristupov.Fork defaultSourceFolder -string "~"
+defaults write com.DanPristupov.Fork defaultSourceFolder -string "/Users/bochmann/Projects/"
 
 # Set font.
 defaults write com.DanPristupov.Fork diffFontName -string "SauceCodeProNerdFontComplete-Regular"
@@ -1709,24 +1763,43 @@ defaults write com.DanPristupov.Fork disableAnonymousUsageReports -int 1
 # Use latest git from brew.
 defaults write com.DanPristupov.Fork gitInstanceType -int 3
 
+###############################################################################
+# NetNewsWire                                                                 #
+###############################################################################
+
+# Check for stable updates.
+defaults write com.ranchero.NetNewsWire-Evergreen SUAutomaticallyUpdate -int 1
+defaults write com.ranchero.NetNewsWire-Evergreen SUEnableAutomaticChecks -int 1
+defaults write com.ranchero.NetNewsWire-Evergreen SUHasLaunchedBefore -int 1
+
+# Refresh every 4 hours.
+defaults write com.ranchero.NetNewsWire-Evergreen refreshInterval -int 6
+
+# Hide read feeds and articles.
+defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readFeedsFilterState -bool true
+defaults write com.ranchero.NetNewsWire-Evergreen windowState -dict-add readArticlesFilterStateValue -bool true
 
 ###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
 
-for app in "Activity Monitor" \
-        "Address Book" \
-        "Calendar" \
-        "cfprefsd" \
-        "Contacts" \
-        "Dock" \
-        "Finder" \
-        "Mail" \
-        "Messages" \
-        "Photos" \
-        "Safari" \
-        "SystemUIServer" \
-        "Terminal"; do
-    killall "${app}" &> /dev/null
+for app (
+    "Activity Monitor"
+    "Address Book"
+    "Calendar"
+    "cfprefsd"
+    "Contacts"
+    "Dock"
+    "Finder"
+    "iCal"
+    "Mail"
+    "Messages"
+    "Photos"
+    "Safari"
+    "SystemUIServer"
+    "Transmission"
+    # Kill terminal last
+    "Terminal"
+); do
+    killall "${app}" &> /dev/null || true
 done
-echo "Done. Note that some of these changes require a logout/restart to take effect."
