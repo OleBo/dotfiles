@@ -1,0 +1,38 @@
+{{- if or (eq .chezmoi.os "linux") (eq .chezmoi.os "darwin") -}}
+#! /usr/bin/env bash
+
+set -e pipefail
+
+source {{ .chezmoi.sourceDir }}/scripts/.helpers
+ASDF_DATA_DIR="${HOME}/.asdf"
+ASDF="/usr/local/bin/asdf"
+if [ ! -f "${ASDF}" ]; then
+  echo "asdf is not yet installed"
+  exit 0
+fi
+
+PATH_old="${PATH}"
+export PATH="${HOME}/.asdf/shims:${PATH}"
+
+{{ if .is_root -}}
+export PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
+{{ end -}}
+
+started "Update all ASDF plugins..."
+${ASDF} plugin update --all
+success "All ASDF plugins updated."
+started "Install all default ASDF tool versions..."
+{{ if .is_wsl }}
+ CC=/home/linuxbrew/.linuxbrew/bin/gcc-14 \
+ CPPFLAGS="-I/home/linuxbrew/.linuxbrew/include" \
+ LDFLAGS="-L/home/linuxbrew/.linuxbrew/lib" \
+ ${ASDF} install
+{{ else }}
+  ${ASDF} install || echo ""
+{{ end -}}
+
+success "All ASDF apps installed."
+
+export PATH="${PATH_old}"
+
+{{- end -}}

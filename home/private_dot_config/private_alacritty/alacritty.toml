@@ -1,0 +1,11 @@
+
+general.import = [
+    "~/.config/alacritty/themes/themes/hyper.toml"
+]
+
+[window]
+  opacity = 1.0
+  dynamic_padding = true
+
+[font]
+  normal = { family = "FiraMono Nerd Font" }

@@ -1,0 +1,139 @@
+
+{{- if (eq .chezmoi.os "darwin") -}}
+#! /usr/bin/env bash
+set -ev pipefail
+
+# 1. Install Homebrew
+which -a brew || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+brew="/usr/local/Homebrew/bin/brew"
+$brew --version
+
+# 2. Add brew tap(s)
+$brew tap fluxcd/tap
+$brew tap go-task/tap
+$brew tap dty1er/tap
+
+# 3. Install Homebrew packages
+## `brew bundle dump` to generate Brewfile
+$brew bundle --no-lock --file=/dev/stdin <<EOF
+    brew "llama.cpp"
+    brew "huggingface-cli"
+    brew "renovate"
+    brew "go-task"
+    brew "meta-package-manager" 
+    brew "readline"
+    brew "asdf"
+    brew "sqlite"
+    brew "xz"
+    brew "awscli"
+    brew "chezmoi"
+    brew "fzf"
+    brew "gh"
+    brew "git"
+    brew "git-crypt"
+    brew "gnupg"
+    brew "go"
+    brew "gomplate"
+    brew "goreleaser"
+    brew "grep"
+    brew "htop"
+    brew "hub"
+    brew "hyperfine"
+    brew "iperf3"
+    brew "jq"
+    brew "k9s"
+    brew "kubeseal"
+    brew "kustomize"
+    brew "librsvg"
+    brew "make"
+    brew "sevenzip"
+    brew "shellcheck"
+    brew "sops"
+    brew "tmux"
+    brew "tree"
+    brew "velero"
+    brew "watch"
+    brew "wget"
+    brew "wireshark"
+    brew "yq"
+    brew "zlib"
+    brew "zsh-syntax-highlighting"
+    brew "dty1er/tap/kubecolor"
+    cask "firefox"
+    cask "google-chrome"
+    cask "multipass"
+    cask "slack"
+    cask "spotify"
+    cask "visual-studio-code"
+    cask "docker"
+    cask "huggingchat"
+
+EOF
+
+# 4. Upgrade already-installed brew packages
+$brew update && $brew upgrade
+
+# 5. Upgrade already-installed mpm packages
+mpm="/usr/local/bin/mpm"
+$mpm --verbosity INFO sync
+
+
+# 6. Font URLs https://github.com/romkatv/powerlevel10k/blob/master/font.md
+FONT_URLS=(
+    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
+    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
+    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
+    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+)
+
+# Font directory
+FONT_DIR="$HOME/Library/Fonts"
+
+# Download and install fonts (only if not already downloaded)
+echo "Checking for MesloLGS NF fonts..."
+for url in "${FONT_URLS[@]}"; do
+    # Extract font filename from URL
+    font_name=$(basename "$url" | sed 's/%20/ /g')
+    font_path="$FONT_DIR/$font_name"
+
+    if [[ -f "$font_path" ]]; then
+        echo "Font already exists: $font_name"
+    else
+        echo "Downloading $font_name..."
+        curl -L -o "$font_path" "$url"
+        if [[ $? -eq 0 ]]; then
+            echo "Downloaded $font_name successfully."
+        else
+            echo "Failed to download $font_name. Please check the URL or your internet connection."
+            exit 1
+        fi
+    fi
+done
+
+# Verify fonts were downloaded
+if [[ $(ls "$FONT_DIR" | grep "MesloLGS NF") ]]; then
+    echo "Fonts installed successfully in $FONT_DIR."
+else
+    echo "Failed to install fonts. Please check the download URLs."
+    exit 1
+fi
+
+# Configure Terminal app to use MesloLGS NF Regular
+echo "Configuring Terminal app to use MesloLGS NF Regular..."
+osascript <<EOD
+tell application "Terminal"
+    -- Get the default settings
+    set defaultSettings to default settings
+    -- Set the font name and size
+    set font name of defaultSettings to "MesloLGS NF Regular"
+    set font size of defaultSettings to 12
+    -- Apply the changes
+    set default settings to defaultSettings
+end tell
+EOD
+
+
+echo "Terminal app configured to use MesloLGS NF Regular."
+echo "Please restart Terminal to apply the changes."
+
+{{- end -}}

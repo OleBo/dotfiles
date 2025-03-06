@@ -1,0 +1,66 @@
+# The following variables are only available within this TOML template file
+
+{{ $personalName := "Olaf Bochmann" -}}
+{{- $personalEmail := "olaf.bochmann@gmail.com" -}}
+{{- $personalSigningKey := "D281F9ABACD90CDB" -}}
+{{- $workLaptop := "marcos-soutullo-laptop" -}}
+
+{{- $isWsl := or (env "WSL_DISTRO_NAME") (env "IS_WSL") | not | not -}}
+{{- $isFedora := lookPath "gnome-shell" | not | not -}}
+
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- $isRoot := contains $workLaptop .chezmoi.hostname | not -}}
+{{- $isWork := contains $workLaptop .chezmoi.hostname | not -}}
+
+sourceDir = "{{ .chezmoi.sourceDir }}"
+progress = true
+
+[data]
+  # Here we "export" the variables, so we can access them outside this file
+  osid = {{ $osid | quote }}
+
+  personal_name = "{{ $personalName }}"
+  personal_email = "{{ $personalEmail }}"
+
+  is_root = {{ $isRoot }} # Whether or not to install stuff as root (e.g. brew)
+  is_work = {{ $isWork }} # Whether or not this is my work laptop
+
+  name = "{{ $personalName }}"
+  email = "{{ $personalEmail }}"
+
+  signing_key = "{{ $personalSigningKey }}"
+  signing_format = "ssh" # https://developer.1password.com/docs/ssh/git-commit-signing#advanced-configuration
+  signing_ssh_program = "/opt/1Password/op-ssh-sign"
+
+  {{- if or (lookPath "code") }}
+  editor = "code --wait --diff $LOCAL $REMOTE"
+  {{- else if lookPath "vim" }}
+  editor = "vim"
+  {{- else if lookPath "nano" }}
+  editor = "nano"
+  {{- else }}
+  editor = "vi"
+  {{- end }}
+
+  locale = "en_GB.UTF-8"
+  uname_arch = "{{ output "uname" "-m" | trim }}"
+
+[sourceVCS]
+  autoCommit = true
+
+[template]
+  options = ["missingkey=zero"]
+
+[onepassword]
+  prompt = true
+
+[edit]
+  command = "code"
+  args = ["--wait"]
+
+[warnings]
+  configFileTemplateHasChanged = false

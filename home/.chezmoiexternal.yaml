@@ -1,0 +1,131 @@
+{{- /* "chezmoi" is present as work around for https://github.com/twpayne/chezmoi/discussions/1724 */ -}}
+{{- $cache := dict "chezmoi" .chezmoi -}}
+{{- $arch := includeTemplate "map-architectures" . -}}
+
+{{- template "read-versions-and-revisions-cache" $cache -}}
+
+##########################
+#      OMZ Plugins       #
+##########################
+".oh-my-zsh":
+  type: "git-repo"
+  url: "https://github.com/ohmyzsh/ohmyzsh.git"
+  exact: true
+  refreshPeriod: "72h"
+
+".oh-my-zsh-custom/plugins/zsh-syntax-highlighting":
+  type: "git-repo"
+  url: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+  exact: true
+  refreshPeriod: "24h"
+
+".oh-my-zsh-custom/plugins/zsh-completions":
+  type: "git-repo"
+  url: "https://github.com/zsh-users/zsh-completions.git"
+  exact: true
+  refreshPeriod: "24h"
+
+".oh-my-zsh-custom/themes/powerlevel10k":
+  type: "git-repo"
+  url: "https://github.com/romkatv/powerlevel10k.git"
+  exact: true
+  refreshPeriod: "24h"
+
+".tmux":
+  type: "git-repo"
+  url: "https://github.com/gpakosz/.tmux.git"
+  exact: true
+  refreshPeriod: "24h"
+
+".local/bin/asdf":
+  type: archive-file
+  {{ $asdfVersion := includeTemplate "get-github-latest-version" (list "asdf-vm/asdf" $cache) }}
+  url: "https://github.com/asdf-vm/asdf/releases/download/v{{ $asdfVersion }}/asdf-v{{ $asdfVersion }}-linux-{{ .chezmoi.arch }}.tar.gz"
+  path: asdf
+
+".local/bin/uv":
+  type: archive-file
+  {{ $uvVersion := includeTemplate "get-github-latest-version" (list "astral-sh/uv" $cache) }}
+  url: "https://github.com/astral-sh/uv/releases/download/{{ $uvVersion }}/uv-{{ $arch }}-apple-{{ .chezmoi.os }}.tar.gz"
+  stripComponents: 1
+  path: "uv"
+".local/bin/uvx":
+  type: archive-file
+  url: "https://github.com/astral-sh/uv/releases/download/{{ $uvVersion }}/uv-{{ $arch }}-apple-{{ .chezmoi.os }}.tar.gz"
+  stripComponents: 1
+  path: "uvx"
+
+".fzf":
+  type: "git-repo"
+  url: "https://github.com/junegunn/fzf.git"
+  exact: true
+  refreshPeriod: "24h"
+
+".local/bin/fzf":
+  type: archive-file
+  {{ $fzfVersion := includeTemplate "get-github-latest-version" (list "junegunn/fzf" $cache) }}
+  url: "https://github.com/junegunn/fzf/releases/download/v{{ $fzfVersion }}/fzf-{{ $fzfVersion }}-linux_{{ .chezmoi.arch }}.tar.gz"
+  path: fzf
+
+".config/wireshark_profiles":
+  type: "git-repo"
+  url: "https://github.com/amwalding/wireshark_profiles.git"
+  exact: true
+  refreshPeriod: "72h"
+
+".local/share/fonts":
+  type: "archive"
+  url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraMono.tar.xz"
+  include:
+    - "*.otf"
+    - ".ttf"
+  exact: true
+  refreshPeriod: "168h"
+
+".config/alacritty/themes":
+  type: "git-repo"
+  url: "https://github.com/alacritty/alacritty-theme"
+  exact: true
+  refreshPeriod: "72h"
+
+".local/bin/retry":
+  type: file
+  {{ $retryVersion := includeTemplate "get-github-latest-version" (list "kadwanev/retry" $cache) }}
+  url: "https://github.com/kadwanev/retry/raw/{{ $retryVersion }}/retry"
+  executable: true
+
+{{ if not .is_root -}}
+".apps/vscode":
+  type: "archive"
+  url: "https://code.visualstudio.com/sha/download?version=1.94.2&os={{ .chezmoi.os }}-{{ if eq .chezmoi.arch "amd64" }}x64{{ else }}arm64{{ end }}"
+  exact: true
+  stripComponents: 1
+  refreshPeriod: "168h"
+
+".go":
+  type: "archive"
+  url: "https://go.dev/dl/go1.23.2.{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+  exact: true
+  stripComponents: 1
+  refreshPeriod: "168h"
+
+".local/bin/direnv":
+  type: "file"
+  {{ $direnvVersion := includeTemplate "get-github-latest-version" (list "direnv/direnv" $cache) }}
+  url: "https://github.com/direnv/direnv/releases/download/v{{ $direnvVersion }}/direnv.linux-{{ .chezmoi.arch }}"
+  executable: true
+{{ end -}}
+
+#### Script/Tool completions
+".local/bin/kubectx":
+  type: archive-file
+  {{ $kubectxVersion := includeTemplate "get-github-latest-version" (list "ahmetb/kubectx" $cache) }}
+  url: "https://github.com/ahmetb/kubectx/releases/download/v{{ $kubectxVersion }}/kubectx_v{{ $kubectxVersion }}_linux_{{ .uname_arch }}.tar.gz"
+  path: kubectx
+
+".oh-my-zsh-custom/plugins/my-completions/_kubectx.zsh":
+  type: file
+  url: "https://github.com/ahmetb/kubectx/raw/v{{ $kubectxVersion }}/completion/_kubectx.zsh"
+
+
+{{- template "save-versions-and-revisions-cache" $cache -}}

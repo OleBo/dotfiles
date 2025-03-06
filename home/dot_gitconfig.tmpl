@@ -1,0 +1,48 @@
+[init]
+  defaultBranch = main
+
+[user]
+  name = {{ .name }}
+  email = {{ .email }}
+  {{ if .signing_key -}}
+  signingKey = {{ .signing_key }}
+  {{- end }}
+
+[credential]
+  helper = store
+
+[alias]
+  plog = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  vfc = verify-commit
+  st = status
+  squash-all = "!f(){ git reset $(git commit-tree HEAD^{tree} -m \"${1:-A new start}\");};f"
+
+[diff]
+  ignoreSubmodules = dirty
+  guitool = personal
+
+[difftool "personal"]
+  cmd = {{ .editor }}
+
+[push]
+  default=simple
+  followTags=false
+
+[pull]
+  rebase = true
+
+[commit]
+  {{ if .signing_key -}}
+  gpgsign = true
+  {{ else -}}
+  gpgsign = false
+  {{ end -}}
+    
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/local/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/local/bin/gh auth git-credential
+

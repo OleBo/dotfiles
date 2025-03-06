@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+echo_task() {
+  printf "\033[0;34m--> %s\033[0m\n" "$*"
+}
+
+error() {
+  printf "\033[0;31m%s\033[0m\n" "$*" >&2
+  exit 1
+}
+
+# Retry mechanism
+retry_count=3
+retry_delay=5
+
+attempt=1
+success=false
+
+# -e: exit on error
+# -u: exit on unset variables
+set -eu
+
+if ! chezmoi="$(command -v chezmoi)"; then
+  bin_dir="${HOME}/.local/bin"
+  chezmoi="${bin_dir}/chezmoi"
+  echo_task "Installing chezmoi to ${chezmoi}"
+  if command -v curl >/dev/null; then
+    chezmoi_install_script="$(curl -fsSL https://git.io/chezmoi)"
+  elif command -v wget >/dev/null; then
+    chezmoi_install_script="$(wget -qO- https://git.io/chezmoi)"
+  else
+    error "To install chezmoi, you must have curl or wget."
+  fi
+  sh -c "${chezmoi_install_script}" -- -b "${bin_dir}"
+  unset chezmoi_install_script bin_dir
+fi
+
+# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
+# shellcheck disable=SC2312
+script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
+
+if [ ! -f "${script_dir}/.chezmoiversion" ]; then
+  echo_task "Using ~/.dotfiles as chezmoi source"
+  script_dir="${HOME}/.dotfiles"
+  mkdir -pv "$script_dir"
+fi
+
+if [ -n "${DOTFILES_ONE_SHOT-}" ]; then
+  chezmoi_extra_args+=("--one-shot")
+else
+  chezmoi_extra_args+=("--apply")
+fi
+
+if [ -n "${DOTFILES_DEBUG-}" ]; then
+  chezmoi_extra_args+=("--debug")
+fi
+
+if [ -n "${DOTFILES_VERBOSE-}" ]; then
+  chezmoi_extra_args+=("--verbose")
+fi
+
+if [ -n "${DOTFILES_NO_TTY-}" ]; then
+  # Dynamic chezmoi arguments handling
+  chezmoi_extra_args+=("--source" "${script_dir}")
+  chezmoi_extra_args+=("--no-tty")
+else
+  chezmoi_extra_args=("github.com/${DOTFILES_USER:-olebo}/dotfiles")
+fi
+
+while [ "$attempt" -le "$retry_count" ]; do
+  echo_task "Attempt $attempt: Running chezmoi init with args: ${chezmoi_extra_args[*]}"
+
+  if "${chezmoi}" init "${chezmoi_extra_args[@]}"; then
+    success=true
+    break
+  else
+    echo_task "chezmoi init failed. Retrying in ${retry_delay} seconds..."
+    sleep "$retry_delay"
+    attempt=$((attempt+1))
+  fi
+done
+
+if [ "$success" = false ]; then
+  error "chezmoi init failed after $retry_count attempts."
+fi

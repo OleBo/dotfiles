@@ -1,0 +1,33 @@
+
+{{- if (eq .chezmoi.os "linux") -}}
+#! /usr/bin/env bash
+set -ev pipefail
+
+source {{ .chezmoi.sourceDir }}/scripts/.helpers
+
+# Assess whether this is an ubuntu or debian system and check is the root flag is set
+{{ if .is_root -}}
+
+check_sudo
+
+{{ if or (eq .chezmoi.osRelease.id "ubuntu") (eq .chezmoi.osRelease.id "debian") -}}
+
+DEBIAN_FRONTEND=noninteractive sudo -E apt update
+DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
+              gpg \
+              curl
+
+# GPG-Agent https://wiki.ubuntuusers.de/GPG-Agent/
+
+DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
+               gnupg-agent \
+               pinentry-curses \
+               pinentry-gtk2
+
+{{ end -}}
+{{- if or (eq .chezmoi.osRelease.id "rhel") (eq .chezmoi.osRelease.id "fedora") -}}
+
+
+{{ end -}}
+{{- end -}}
+{{- end -}}

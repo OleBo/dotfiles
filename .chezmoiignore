@@ -1,0 +1,17 @@
+# Do not apply the following files that live in my dotfiles repo
+README.md
+LICENSE
+Makefile
+install
+settings.json
+tests/
+.vscode
+.ssh
+.github
+.oh-my-zsh-custom/themes/powerlevel10k/**
+.oh-my-zsh-custom/plugins/zsh-syntax-highlighting/**
+scripts/install_dotfiles.sh
+*.deb
+*.tar.gz
+.pre-commit-config.yaml
+.local/share/fonts/.uuid

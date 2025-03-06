@@ -1,0 +1,15 @@
+---
+name: "Create GH issues based on TODO comments"
+on:
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  build:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - uses: "actions/checkout@master"
+      - name: "TODO to Github Issue"
+        uses: alstr/todo-to-issue-action@v5.1
+        id: "todo"

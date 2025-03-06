@@ -1,0 +1,13 @@
+.DS_Store
+
+# Powerlevel
+**/powerlevel10k/*
+
+# zsh-syntax-highlighting
+**/zsh-syntax-highlighting/*
+
+# IDEs
+.idea
+
+# Chezmoi binary file
+home/bin/chezmoi
