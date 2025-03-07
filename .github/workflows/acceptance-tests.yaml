@@ -81,6 +81,6 @@ jobs:
           title: "🟡 [Dotfiles] - Nightly Build Failed"
           message: "Github Actions Nightly dotfiles build failed. Take a look"
           url_title: "View on Github"
-          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          url: "${{ github.server_url }}/${{ lowercase(github.repository) }}/actions/runs/${{ github.run_id }}"
           priority: "-1" # low priority - no sound or vibration generated
         if: failure()
