@@ -64,13 +64,12 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          driver: docker
           context: .
           platforms: linux/amd64
           file: ./tests/${{ matrix.os }}/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ matrix.os }}-${{ env.DATE }}
+            ghcr.io/${{ lowercase(github.repository) }}:${{ matrix.os }}-${{ env.DATE }}
 
       - name: Notify about failure
         uses: umahmood/pushover-actions@main
