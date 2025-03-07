@@ -60,6 +60,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: lower-repo
+        shell: pwsh
+        run: |
+          "::set-output name=repository::$($env:GITHUB_REPOSITORY.ToLowerInvariant())"
+        
       - name: Build and push
         id: build
         uses: docker/build-push-action@v6
@@ -69,7 +74,7 @@ jobs:
           file: ./tests/${{ matrix.os }}/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ lowercase(github.repository) }}:${{ matrix.os }}-${{ env.DATE }}
+            ghcr.io/${{ steps.lower-repo.outputs.repository }}:${{ matrix.os }}-${{ env.DATE }}
 
       - name: Notify about failure
         uses: umahmood/pushover-actions@main
@@ -81,6 +86,6 @@ jobs:
           title: "🟡 [Dotfiles] - Nightly Build Failed"
           message: "Github Actions Nightly dotfiles build failed. Take a look"
           url_title: "View on Github"
-          url: "${{ github.server_url }}/${{ lowercase(github.repository) }}/actions/runs/${{ github.run_id }}"
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           priority: "-1" # low priority - no sound or vibration generated
         if: failure()
