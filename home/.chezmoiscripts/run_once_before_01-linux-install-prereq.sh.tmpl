@@ -1,0 +1,94 @@
+
+{{- if (eq .chezmoi.os "linux") -}}
+#! /usr/bin/env bash
+set -ev pipefail
+set +x
+# Assess whether this is an ubuntu or debian system and check is the root flag is set
+{{ if .is_root -}}
+{{ if or (eq .chezmoi.osRelease.id "ubuntu") (eq .chezmoi.osRelease.id "debian") -}}
+
+DEBIAN_FRONTEND=noninteractive sudo -E apt update
+DEBIAN_FRONTEND=noninteractive sudo -E apt upgrade -y
+DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
+              1password \
+              1password-cli \
+              iproute2 \
+              build-essential llvm liblzma-dev tk-dev libacl1-dev\
+              curl \
+              direnv \
+              file \
+              findutils \
+              git \
+              jq \
+              libacl1 zlib1g-dev libbz2-dev libxmlsec1-dev xz-utils libedit-dev \
+              libb2-dev libssl-dev libreadline-dev libsqlite3-dev libxml2-dev \
+              libzstd-dev liblz4-dev software-properties-common libncurses5-dev \
+              locales \
+              net-tools \
+              python3 python3-dev python3-pip \
+              sed \
+              socat \
+              sshpass \
+              tmux \
+              unzip \
+              vim \
+              wget \
+              wireguard \
+              wireguard-tools \
+              zsh
+
+sudo locale-gen {{ .locale }}
+
+{{ end -}}
+{{- if (eq .chezmoi.osRelease.id "rhel") -}}
+sudo -E yum update -y
+sudo -E yum install -y \
+              curl \
+              file \
+              git \
+              jq \
+              vim
+{{ end -}}
+{{- if (eq .chezmoi.osRelease.id "fedora") -}}
+sudo -E dnf update -y
+sudo -E dnf install -y \
+              1password \
+              1password-cli \
+              curl \
+              file \
+              git \
+              jq \
+              vim \
+              util-linux-user \
+              libxcrypt-compat \
+              zsh \
+              unzip \
+              python \
+              gcc \
+              tmux \
+              make \
+              zlib-devel \
+              bzip2 \
+              bzip2-devel \
+              readline-devel \
+              sqlite \
+              sqlite-devel \
+              openssl-devel \
+              tk-devel \
+              xz \
+              g++ \
+              patch \
+              bison \
+              libffi-devel \
+              dnf-automatic \
+              cronie \
+              cronie-anacron
+
+# Setting the System Locale
+localectl set-locale LANG={{ .locale }} || echo -e "Could not set locale - Ignore if happens within Container"
+
+# TODO - Modify `apply_updates = yes` in /etc/dnf/automatic.conf
+## And `systemctl enable --now dnf-automatic.timer`
+{{ end -}}
+{{- end -}}
+{{- end -}}
