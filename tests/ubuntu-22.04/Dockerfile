@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-ENV GIT_REPO=https://github.com/kitos9112/dotfiles.git
+ENV GIT_REPO=https://github.com/OleBo/dotfiles.git
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
