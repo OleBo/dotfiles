@@ -23,7 +23,6 @@ DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
               libzstd-dev liblz4-dev software-properties-common libncurses5-dev \
               locales \
               net-tools \
-              pacman \
               sed \
               socat \
               sshpass \
@@ -36,7 +35,11 @@ DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
               zsh
 
 sudo locale-gen {{ .locale }}
-sudo git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si
+
+# Install asdf-vm using the official method
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 
 {{ end -}}
 {{- if (eq .chezmoi.osRelease.id "rhel") -}}
@@ -47,6 +50,12 @@ sudo -E yum install -y \
               git \
               jq \
               vim
+
+# Install asdf-vm using the official method
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+
 {{ end -}}
 {{- if (eq .chezmoi.osRelease.id "fedora") -}}
 sudo -E dnf update -y
@@ -61,7 +70,6 @@ sudo -E dnf install -y --skip-unavailable \
               libxcrypt-compat \
               zsh \
               unzip \
-              pacman \
               gcc \
               tmux \
               make \
@@ -82,7 +90,10 @@ sudo -E dnf install -y --skip-unavailable \
               cronie \
               cronie-anacron
 
-sudo git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si
+# Install asdf-vm using the official method
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 
 # Setting the System Locale
 localectl set-locale LANG={{ .locale }} || echo -e "Could not set locale - Ignore if happens within Container"

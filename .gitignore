@@ -11,3 +11,6 @@
 
 # Chezmoi binary file
 home/bin/chezmoi
+
+# Ignore the .secrets file
+.secrets
