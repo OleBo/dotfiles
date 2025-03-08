@@ -23,7 +23,7 @@ DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
               libzstd-dev liblz4-dev software-properties-common libncurses5-dev \
               locales \
               net-tools \
-              python3 python3-dev python3-pip \
+              pacman \
               sed \
               socat \
               sshpass \
@@ -36,6 +36,7 @@ DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
               zsh
 
 sudo locale-gen {{ .locale }}
+sudo git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si
 
 {{ end -}}
 {{- if (eq .chezmoi.osRelease.id "rhel") -}}
@@ -60,7 +61,7 @@ sudo -E dnf install -y --skip-unavailable \
               libxcrypt-compat \
               zsh \
               unzip \
-              python \
+              pacman \
               gcc \
               tmux \
               make \
@@ -80,6 +81,8 @@ sudo -E dnf install -y --skip-unavailable \
               dnf-automatic \
               cronie \
               cronie-anacron
+
+sudo git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si
 
 # Setting the System Locale
 localectl set-locale LANG={{ .locale }} || echo -e "Could not set locale - Ignore if happens within Container"
