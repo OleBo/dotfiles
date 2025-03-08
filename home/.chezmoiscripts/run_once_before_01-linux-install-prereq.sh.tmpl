@@ -51,9 +51,8 @@ sudo -E yum install -y \
 {{ end -}}
 {{- if (eq .chezmoi.osRelease.id "fedora") -}}
 sudo -E dnf update -y
-sudo -E dnf install -y \
-              1password \
-              1password-cli \
+sudo -E dnf install -y --skip-unavailable \
+              which \
               curl \
               file \
               git \
