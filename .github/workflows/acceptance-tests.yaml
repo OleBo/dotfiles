@@ -28,7 +28,6 @@ jobs:
           - ubuntu
           - debian
           - fedora
-          - rhel
 
     steps:
       - name: Get the current date

@@ -39,7 +39,6 @@ This setup has been tested on multiple operating systems and Linux distributions
 
 - **Fedora:** 
 - **Ubuntu:** 
-- **Red Hat Enterprise Linux (RHEL)**
 - **macOS**
 
 Docker containers are used for testing across these platforms to ensure compatibility and reliability.
