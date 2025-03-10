@@ -75,14 +75,17 @@ capitalize() {
   echo $cap_first$cap_rest
 }
 
+# Function to check if the user has sudo privileges
 check_sudo() {
   echo "Testing sudo, you may need to enter your password:"
-  sudo echo "✅  sudo is good"
-  if [[ $? != 0 ]]; then
+  if sudo -n true 2>/dev/null; then
+    echo "✅  sudo is good"
+  else
     echo "💥  sudo auth failed"
     exit 1
   fi
 }
+
 
 get_latest_github_release() {
   local repo_owner=$1
