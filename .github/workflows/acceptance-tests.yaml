@@ -20,15 +20,15 @@ env:
 jobs:
   build:
     name: Build and Push Docker Image
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         os:
-          - ubuntu-22.04
-          - ubuntu-24.04
-          - fedora-41
-          - fedora-42
+          - ubuntu
+          - debian
+          - fedora
+          - rhel
 
     steps:
       - name: Get the current date
@@ -36,7 +36,7 @@ jobs:
         run: echo "DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@v4
 
       - name: Override default config from dispatch variables
         run: |

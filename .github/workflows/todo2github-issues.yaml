@@ -7,9 +7,9 @@ on:
       - master
 jobs:
   build:
-    runs-on: "ubuntu-24.04"
+    runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@master"
+      - uses: actions/checkout@v4
       - name: "TODO to Github Issue"
         uses: alstr/todo-to-issue-action@v5.1
         id: "todo"

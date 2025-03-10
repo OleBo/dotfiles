@@ -13,10 +13,10 @@ env:
 jobs:
   build:
     name: Lint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8787d8c41d3302ff274a6bb25cf87470967ee8e1 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Generate Token
@@ -26,7 +26,7 @@ jobs:
           app-id: "${{ secrets.BOT_APP_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
       - name: Lint
-        uses: super-linter/super-linter@v7
+        uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "${{ env.DEFAULT_BRANCH }}"

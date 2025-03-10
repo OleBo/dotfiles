@@ -1,6 +1,5 @@
-FROM ubuntu:24.04
+FROM ubuntu:latest
 
-ENV GIT_REPO=https://github.com/OleBo/dotfiles.git
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \

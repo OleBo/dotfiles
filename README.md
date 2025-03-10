@@ -37,8 +37,9 @@ This repository contains my personal dotfiles, managed using [chezmoi](https://w
 
 This setup has been tested on multiple operating systems and Linux distributions, including:
 
-- **Fedora:** 41, 42
-- **Ubuntu:** 22.04, 24.04
+- **Fedora:** 
+- **Ubuntu:** 
+- **Red Hat Enterprise Linux (RHEL)**
 - **macOS**
 
 Docker containers are used for testing across these platforms to ensure compatibility and reliability.
