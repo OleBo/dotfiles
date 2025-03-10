@@ -40,7 +40,9 @@ sudo -E yum install -y \
               file \
               git \
               jq \
-              vim
+              vim \
+              zsh
+
 
 {{ end -}}
 {{- if (eq .chezmoi.osRelease.id "fedora") -}}

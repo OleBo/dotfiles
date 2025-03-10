@@ -61,10 +61,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: lower-repo
-        shell: pwsh
-        run: |
-          "::set-output name=repository::$($env:GITHUB_REPOSITORY.ToLowerInvariant())"
-        
+        run: echo "::set-output name=repository::${GITHUB_REPOSITORY,,}"
+
       - name: Build and push
         id: build
         uses: docker/build-push-action@v6
