@@ -60,7 +60,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: lower-repo
-        run: echo "::set-output name=repository::${GITHUB_REPOSITORY,,}"
+        run: echo "repository=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Build and push
         id: build
@@ -71,7 +71,7 @@ jobs:
           file: ./tests/${{ matrix.os }}/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ steps.lower-repo.outputs.repository }}:${{ matrix.os }}-${{ env.DATE }}
+            ghcr.io/${{ env.repository }}:${{ matrix.os }}-${{ env.DATE }}
 
       - name: Notify about failure
         uses: umahmood/pushover-actions@main

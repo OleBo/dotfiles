@@ -27,6 +27,7 @@ DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y \
 {{ end -}}
 {{- if or (eq .chezmoi.osRelease.id "rhel") (eq .chezmoi.osRelease.id "fedora") -}}
 
+sudo -E dnf update -y
 
 {{ end -}}
 {{- end -}}
