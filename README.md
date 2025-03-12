@@ -2,7 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/olebo/dotfiles.svg)](https://github.com/olebo/dotfiles/stargazers)
-[![CI](https://github.com/olebo/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/olebo/dotfiles/actions)
+![Acceptance](https://github.com/olebo/dotfiles/actions/workflows/acceptance-tests.yaml/badge.svg)
+![Linter](https://github.com/olebo/dotfiles/actions/workflows/linters.yaml/badge.svg)
+![Renovate](https://github.com/olebo/dotfiles/actions/workflows/renovate.yaml/badge.svg)
+![ToDo](https://github.com/olebo/dotfiles/actions/workflows/todo2github-issues.yaml/badge.svg)
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/olebo/dotfiles)
 
 [https://github.com/kitos9112/dotfiles]
