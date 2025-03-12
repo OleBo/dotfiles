@@ -8,6 +8,7 @@ source {{ .chezmoi.sourceDir }}/scripts/.helpers
 # Assess whether this is an ubuntu or debian system and check is the root flag is set
 {{ if .is_root -}}
 
+# TODO(@olebo): Figure out why this fails in all containers
 check_sudo
 
 {{ if or (eq .chezmoi.osRelease.id "ubuntu") (eq .chezmoi.osRelease.id "debian") -}}
