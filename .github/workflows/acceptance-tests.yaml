@@ -45,6 +45,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Debug Generate Token Parameters
+        run: |
+          echo "App ID: ${{ secrets.BOT_APP_ID }}"
+          echo "Private Key: ${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
       - name: Generate Token
         uses: actions/create-github-app-token@v1
         id: generate-token
