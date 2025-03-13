@@ -33,4 +33,35 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: .markdownlint.yaml
           YAML_CONFIG_FILE: .yamllint.yaml
+          # Set your fix mode variables to true
+          FIX_SHELL_SHFMT: true
+          FIX_MARKDOWN: true
+          FIX_JSON:	true
+          FIX_JSONC: true
+          FIX_JAVASCRIPT_PRETTIER: true
+          FIX_JAVASCRIPT_STANDARD: true
+          FIX_JSON: true
+          FIX_JSONC: true
+
+
+      - name: Commit and push linting fixes
+        # Run only on:
+        # - Pull requests
+        # - Not on the default branch
+        if: >
+          github.event_name == 'pull_request' &&
+          github.ref_name != github.event.repository.default_branch
+        uses: stefanzweifel/git-auto-commit-action@v5
+        id: auto-commit-action #mandatory for the output to show up in ${{ steps }}
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "chore: fix linting issues"
+      
+      - name: "Show changes if detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        run: git diff HEAD~1 HEAD
+
+      - name: "Run if no changes have been detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'false'
+        run: echo "No Changes!"
 
