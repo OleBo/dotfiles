@@ -2,7 +2,6 @@
 name: lint YAML and Shell
 
 on: # yamllint disable-line rule:truthy
-  push: null
   pull_request: null
 
 permissions: {}
@@ -13,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       packages: read
       # To report GitHub Actions status checks
       statuses: write
