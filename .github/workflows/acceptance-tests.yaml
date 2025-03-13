@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Get the current date
         id: date
-        run: echo "DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%d%m%Y')" >> "$GITHUB_ENV"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: lower-repo
-        run: echo "repository=${{ GITHUB_REPOSITORY,, }}" >> $GITHUB_ENV
+        run: echo "repository=${{ GITHUB_REPOSITORY,, }}" >> "$GITHUB_ENV"
 
       - name: Build and push
         id: build

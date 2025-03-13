@@ -1,3 +1,13 @@
 ---
 rules:
-  no-todo: false
+  no-todo: true
+  common-misspellings: true
+  write-good:
+    passive: true
+    illusion: true
+    so: true
+    thereIs: true
+    weasel: true
+  spellcheck-tech-word: true
+  terminology:
+    terms: "./terms.json"

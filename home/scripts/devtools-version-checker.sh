@@ -15,7 +15,7 @@ bison --version | head -n1
 if [ -h /usr/bin/yacc ]; then
   echo "/usr/bin/yacc -> $(readlink -f /usr/bin/yacc)";
 elif [ -x /usr/bin/yacc ]; then
-  echo yacc is $(/usr/bin/yacc --version | head -n1)
+  echo "yacc is $(/usr/bin/yacc --version | head -n1)"
 else
   echo "yacc not found"
 fi
@@ -29,7 +29,7 @@ gawk --version | head -n1
 if [ -h /usr/bin/awk ]; then
   echo "/usr/bin/awk -> $(readlink -f /usr/bin/awk)";
 elif [ -x /usr/bin/awk ]; then
-  echo awk is $(/usr/bin/awk --version | head -n1)
+  echo "awk is $(/usr/bin/awk --version | head -n1)"
 else
   echo "awk not found"
 fi
@@ -43,7 +43,7 @@ cat /proc/version
 m4 --version | head -n1
 make --version | head -n1
 patch --version | head -n1
-echo Perl $(perl -V:version)
+echo "Perl $(perl -V:version)"
 python3 --version
 sed --version | head -n1
 tar --version | head -n1

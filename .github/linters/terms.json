@@ -1,0 +1,14 @@
+{
+  "terms": {
+    "GitHub": {
+      "description": "GitHub is a web-based version-control and collaboration platform for software developers.",
+      "expected": "GitHub",
+      "patterns": ["github", "Github"]
+    },
+    "JavaScript": {
+      "description": "JavaScript is a programming language commonly used in web development.",
+      "expected": "JavaScript",
+      "patterns": ["javascript", "Javascript"]
+    }
+  }
+}

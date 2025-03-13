@@ -8,7 +8,7 @@
     ":separatePatchReleases",
     "docker:enableMajor",
     ":enablePreCommit",
-    "github>olebo/dotfiles//.github/renovate/regexManagers.json5",
+    "github>olebo/dotfiles//.github/renovate/regexManagers.json5"
   ],
   "repositories": [
     "olebo/dotfiles"
@@ -32,8 +32,8 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["node","python"],
-      "minimumReleaseAge": "20 days",
+      "matchPackageNames": ["node", "python"],
+      "minimumReleaseAge": "20 days"
     },
     {
       "matchUpdateTypes": [
@@ -48,7 +48,7 @@
   "asdf": {
     "fileMatch": [
       "(^|/)\\.tool-versions$",
-      "(^|/)dot_tool-versions.tmpl$",
+      "(^|/)dot_tool-versions.tmpl$"
     ]
   }
 }

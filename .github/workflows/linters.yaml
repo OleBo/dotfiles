@@ -42,7 +42,6 @@ jobs:
           FIX_JAVASCRIPT_PRETTIER: true
           FIX_JAVASCRIPT_STANDARD: true
 
-
       - name: Commit and push linting fixes
         # Run only on:
         # - Pull requests
@@ -55,7 +54,7 @@ jobs:
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
           commit_message: "chore: fix linting issues"
-      
+
       - name: "Show changes if detected"
         if: steps.auto-commit-action.outputs.changes_detected == 'true'
         run: git diff HEAD~1 HEAD
@@ -63,4 +62,3 @@ jobs:
       - name: "Run if no changes have been detected"
         if: steps.auto-commit-action.outputs.changes_detected == 'false'
         run: echo "No Changes!"
-
