@@ -190,12 +190,14 @@ The `.pre-commit-config.yaml` file configures the [pre-commit](https://pre-commi
 The `repos` list defines external repositories that provide various hooks. Each repository is pinned to a specific revision to ensure consistency.
 
 1. **YAML Linting**
+
    - **Repository:** [adrienverge/yamllint](https://github.com/adrienverge/yamllint.git)
    - **Revision:** `v1.35.1`
    - **Hook:** `yamllint`
    - **Arguments:** It uses a custom configuration file (`.github/linters/.yamllint.yaml`) to enforce YAML formatting and syntax rules.
 
 2. **General Pre-commit Hooks**
+
    - **Repository:** [pre-commit/pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks)
    - **Revision:** `v5.0.0`
    - **Hooks Included:**
@@ -207,18 +209,21 @@ The `repos` list defines external repositories that provide various hooks. Each 
      - `check-executables-have-shebangs`: Ensures that executable scripts have proper shebang lines.
 
 3. **Forbid CRLF Line Endings**
+
    - **Repository:** [Lucas-C/pre-commit-hooks](https://github.com/Lucas-C/pre-commit-hooks)
    - **Revision:** `v1.5.5`
    - **Hook:** `forbid-crlf`
    - **Purpose:** Enforces consistent Unix-style LF line endings by forbidding Windows-style CRLF.
 
 4. **Fixing Smart Quotes**
+
    - **Repository:** [sirosen/fix-smartquotes](https://github.com/sirosen/fix-smartquotes)
    - **Revision:** `0.2.0`
    - **Hook:** `fix-smartquotes`
    - **Purpose:** Automatically converts “smart quotes” to standard quotes to avoid issues in code and configuration files.
 
 5. **Secret Detection**
+
    - **Repository:** [gitleaks/gitleaks](https://github.com/gitleaks/gitleaks)
    - **Revision:** `v8.24.0`
    - **Hook:** `gitleaks`

@@ -35,6 +35,7 @@ DOTFILES_DIR="${HOME}/.dotfiles"
 
 if [ ! "$(command -v git)" ]; then
   error "Git does not seems to be installed"
+fi
 
 if [ -d "${DOTFILES_DIR}" ]; then
   git_clean "${DOTFILES_DIR}"

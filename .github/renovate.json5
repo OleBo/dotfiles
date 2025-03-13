@@ -1,5 +1,5 @@
 {
-  "extends": [
+  extends: [
     ":enableRenovate",
     "config:recommended",
     ":disableRateLimiting",
@@ -8,50 +8,31 @@
     ":separatePatchReleases",
     "docker:enableMajor",
     ":enablePreCommit",
-    "github>olebo/dotfiles//.github/renovate/regexManagers.json5"
+    "github>olebo/dotfiles//.github/renovate/regexManagers.json5",
   ],
-  "repositories": [
-    "olebo/dotfiles"
-  ],
-  "timezone": "Europe/Berlin",
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard",
-  "labels": [
-    "renovatebot"
-  ],
-  "commitMessageSuffix": "[ci-skip]",
-  "onboarding": false,
-  "gitAuthor": "henry-pa-bot <166581+henry-bot[bot]@users.noreply.github.com>",
-  "suppressNotifications": [
-    "prIgnoreNotification"
-  ],
-  "ignoreTests": true,
-  "rebaseWhen": "conflicted",
-  "assignees": [
-    "@olebo"
-  ],
-  "packageRules": [
+  repositories: ["olebo/dotfiles"],
+  timezone: "Europe/Berlin",
+  dependencyDashboard: true,
+  dependencyDashboardTitle: "Renovate Dashboard",
+  labels: ["renovatebot"],
+  commitMessageSuffix: "[ci-skip]",
+  onboarding: false,
+  gitAuthor: "henry-pa-bot <166581+henry-bot[bot]@users.noreply.github.com>",
+  suppressNotifications: ["prIgnoreNotification"],
+  ignoreTests: true,
+  rebaseWhen: "conflicted",
+  assignees: ["@olebo"],
+  packageRules: [
     {
-      "matchPackageNames": [
-        "node",
-        "python"
-      ],
-      "minimumReleaseAge": "20 days"
+      matchPackageNames: ["node", "python"],
+      minimumReleaseAge: "20 days",
     },
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "automerge": true
-    }
+      matchUpdateTypes: ["minor", "patch", "pin", "digest"],
+      automerge: true,
+    },
   ],
-  "asdf": {
-    "fileMatch": [
-      "(^|/)\\.tool-versions$",
-      "(^|/)dot_tool-versions.tmpl$"
-    ]
-  }
+  asdf: {
+    fileMatch: ["(^|/)\\.tool-versions$", "(^|/)dot_tool-versions.tmpl$"],
+  },
 }
