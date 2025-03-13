@@ -1,16 +1,7 @@
+---
 name: Schedule - Nightly Acceptance Tests
 
 on:
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: "Dry-Run"
-        default: "true"
-        required: false
-      logLevel:
-        description: "Log-Level"
-        default: "debug"
-        required: false
   schedule:
     - cron: "0 0 * * *"
 
@@ -22,6 +13,11 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     strategy:
       matrix:
         os:
@@ -32,15 +28,10 @@ jobs:
     steps:
       - name: Get the current date
         id: date
-        run: echo "DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%d%m%Y')" >> "$GITHUB_ENV"
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Override default config from dispatch variables
-        run: |
-          echo "DRY_RUN=${{ github.event.inputs.dryRun || env.DRY_RUN }}" >> "$GITHUB_ENV"
-          echo "LOG_LEVEL=${{ github.event.inputs.logLevel || env.LOG_LEVEL }}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -65,7 +56,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: lower-repo
-        run: echo "repository=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+        run: echo "repository=${GITHUB_REPOSITORY@L}" >> "$GITHUB_ENV"
 
       - name: Build and push
         id: build

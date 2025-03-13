@@ -2,35 +2,59 @@
 name: lint YAML and Shell
 
 on: # yamllint disable-line rule:truthy
-  pull_request:
-    branches:
-      - main
+  pull_request: null
 
-env:
-  # Currently no way to detect automatically
-  DEFAULT_BRANCH: main
+permissions: {}
 
 jobs:
-  build:
+  lint:
     name: Lint
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
           fetch-depth: 0
-      - name: Generate Token
-        uses: actions/create-github-app-token@v1
-        id: generate-token
-        with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
-      - name: Lint
-        uses: github/super-linter@v4
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v7.3.0 # x-release-please-version
         env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "${{ env.DEFAULT_BRANCH }}"
-          GITHUB_TOKEN: "${{ steps.generate-token.outputs.token }}"
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: .markdownlint.yaml
           YAML_CONFIG_FILE: .yamllint.yaml
+          CHECKOV_FILE_NAME: .checkov.yaml
+          TEXTLINTRC: .textlintrc
           VALIDATE_NATURAL_LANGUAGE: false
+          # Set your fix mode variables to true
+          FIX_SHELL_SHFMT: true
+          FIX_MARKDOWN: true
+          FIX_JSON: true
+          FIX_JSONC: true
+          FIX_JAVASCRIPT_PRETTIER: true
+          FIX_JAVASCRIPT_STANDARD: true
+
+      - name: Commit and push linting fixes
+        if: github.event_name == 'pull_request' && github.ref_name != github.event.repository.default_branch
+        uses: stefanzweifel/git-auto-commit-action@v5
+        id: auto-commit-action #mandatory for the output to show up in ${{ steps }}
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "chore: fix linting issues"
+
+      - name: "Show changes if detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        run: git diff HEAD~1 HEAD
+
+      - name: "Run if no changes have been detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'false'
+        run: echo "No Changes!"
