@@ -56,7 +56,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: lower-repo
-        run: echo "repository=${{ github.repository | toLower }}" >> "$GITHUB_ENV"
+        run: echo "repository=${{ github.repository || toLower }}" >> "$GITHUB_ENV"
 
       - name: Build and push
         id: build
