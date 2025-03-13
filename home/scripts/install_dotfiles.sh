@@ -28,9 +28,9 @@ git_clean() {
 	$git clean -fdx
 }
 
-DOTFILES_USER=${DOTFILES_USER:-kitos9112}
+DOTFILES_USER=${DOTFILES_USER:-olebo}
 DOTFILES_REPO="https://github.com/$DOTFILES_USER/dotfiles"
-DOTFILES_BRANCH=${DOTFILES_BRANCH:-master}
+DOTFILES_BRANCH=${DOTFILES_BRANCH:-main}
 DOTFILES_DIR="${HOME}/.dotfiles"
 
 if [ ! "$(command -v git)" ]; then
