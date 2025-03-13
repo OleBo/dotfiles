@@ -12,16 +12,16 @@ error() {
 
 get_default_branch() {
   local path=$1
-  git -C ${path} remote show origin | grep 'HEAD branch' | cut -d' ' -f5
+  git -C "${path}" remote show origin | grep 'HEAD branch' | cut -d' ' -f5
 }
 
 git_clean() {
-  local path=$(realpath ${1})
-  local branch="$(get_default_branch ${path})"
+  local path=$(realpath "${1}")
+  local branch="$(get_default_branch "${path}")"
   echo_task "Cleaning ${path} with branch ${branch}"
   local git="git -C ${path}"
-  $git checkout ${branch}
-  $git fetch origin ${branch}
+  $git checkout "${branch}"
+  $git fetch origin "${branch}"
   $git reset --hard FETCH_HEAD
   $git clean -fdx
 }
@@ -42,11 +42,11 @@ if [ ! "$(command -v git)" ]; then
   sudo apt install git -y
 fi
 
-if [ -d ${DOTFILES_DIR} ]; then
-  git_clean ${DOTFILES_DIR}
+if [ -d "${DOTFILES_DIR}" ]; then
+  git_clean "${DOTFILES_DIR}"
 else
     echo_task "Cloning ${DOTFILES_REPO} on branch ${DOTFILES_BRANCH} to ${DOTFILES_DIR}"
-  git clone -b ${DOTFILES_BRANCH} ${DOTFILES_REPO} ${DOTFILES_DIR}
+  git clone -b "${DOTFILES_BRANCH}" "${DOTFILES_REPO}" "${DOTFILES_DIR}"
 fi
 
 INSTALL_BIN="${DOTFILES_DIR}/install"

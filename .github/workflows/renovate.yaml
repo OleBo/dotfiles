@@ -2,16 +2,6 @@
 name: Schedule/Push - Renovate
 
 on:
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: "Dry-Run"
-        default: "true"
-        required: false
-      logLevel:
-        description: "Log-Level"
-        default: "debug"
-        required: false
   schedule:
     - cron: "*/10 * * * *"
   push:
@@ -28,9 +18,13 @@ jobs:
   renovate:
     name: Renovate
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@v4
 
       - name: Generate Token
         uses: actions/create-github-app-token@v1
@@ -38,11 +32,6 @@ jobs:
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
-
-      - name: Override default config from dispatch variables
-        run: |
-          echo "DRY_RUN=${{ github.event.inputs.dryRun || env.DRY_RUN }}" >> "$GITHUB_ENV"
-          echo "LOG_LEVEL=${{ github.event.inputs.logLevel || env.LOG_LEVEL }}" >> "$GITHUB_ENV"
 
       - name: Renovate
         uses: renovatebot/github-action@v41.0.13
