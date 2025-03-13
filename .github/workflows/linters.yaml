@@ -2,35 +2,35 @@
 name: lint YAML and Shell
 
 on: # yamllint disable-line rule:truthy
-  pull_request:
-    branches:
-      - main
+  push: null
+  pull_request: null
 
-env:
-  # Currently no way to detect automatically
-  DEFAULT_BRANCH: main
+permissions: {}
 
 jobs:
-  build:
+  lint:
     name: Lint
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
           fetch-depth: 0
-      - name: Generate Token
-        uses: actions/create-github-app-token@v1
-        id: generate-token
-        with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
-      - name: Lint
-        uses: github/super-linter@v4
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v7.3.0 # x-release-please-version
         env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "${{ env.DEFAULT_BRANCH }}"
-          GITHUB_TOKEN: "${{ steps.generate-token.outputs.token }}"
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MARKDOWN_CONFIG_FILE: .markdownlint.yaml
           YAML_CONFIG_FILE: .yamllint.yaml
-          VALIDATE_NATURAL_LANGUAGE: false
+
