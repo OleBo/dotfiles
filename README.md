@@ -289,7 +289,7 @@ The `.env` file is used to set environment variables that scripts in the reposit
 export GITHUB_TOKEN=op://Private/xn6s6f7wujaosvsr2fitieyxre/Security/DeveloperPAT
 ```
 
-### What This Does:
+### What This Does
 
 - **Sets a GitHub Token:**
   It assigns a token (used for authenticating with GitHub’s API or for git operations that require authentication) to the environment variable `GITHUB_TOKEN`.
@@ -297,7 +297,7 @@ export GITHUB_TOKEN=op://Private/xn6s6f7wujaosvsr2fitieyxre/Security/DeveloperPA
 - **Secure Reference:**
   The value `op://Private/...` suggests that the token is managed through a secrets management tool (likely the 1Password CLI). This way, the actual sensitive token is securely referenced rather than stored directly in plaintext within the repository.
 
-### How It’s Typically Used:
+### How It’s Typically Used
 
 - **Script Authentication:**
   Various scripts or automated tasks (e.g., updating dotfiles, cloning repositories, or triggering GitHub Actions) can read this environment variable to authenticate with GitHub without manual intervention.

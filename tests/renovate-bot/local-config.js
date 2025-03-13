@@ -3,5 +3,5 @@ module.exports = {
   repositories: ['olebo/dotfiles'],
   includeForks: true,
   onboarding: false,
-  gitAuthor: 'Self-hosted Renovate Bot <xyz@gmail.com>',
-};
+  gitAuthor: 'Self-hosted Renovate Bot <xyz@gmail.com>'
+}
