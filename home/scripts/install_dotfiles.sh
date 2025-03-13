@@ -16,8 +16,10 @@ get_default_branch() {
 }
 
 git_clean() {
-  local path=$(realpath "${1}")
-  local branch="$(get_default_branch "${path}")"
+  local path
+  path=$(realpath "${1}")
+  local branch
+  branch=$(get_default_branch "${path}")
   echo_task "Cleaning ${path} with branch ${branch}"
   local git="git -C ${path}"
   $git checkout "${branch}"
