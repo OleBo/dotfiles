@@ -35,14 +35,6 @@ DOTFILES_DIR="${HOME}/.dotfiles"
 
 if [ ! "$(command -v git)" ]; then
   error "Git does not seems to be installed"
-  if ! sudo -n true 2>/dev/null; then
-    echo_task "Prompting for sudo password to install Git"
-    sudo true
-  fi
-  echo_task "Installing Git"
-  sudo apt update
-  sudo apt install git -y
-fi
 
 if [ -d "${DOTFILES_DIR}" ]; then
   git_clean "${DOTFILES_DIR}"

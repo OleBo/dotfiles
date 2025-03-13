@@ -1,4 +1,4 @@
 ---
-skip-checks:
+skip-check:
   - CKV2_DOCKER_1
 
